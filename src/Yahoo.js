@@ -50,14 +50,16 @@ export class Yahoo extends OAuth2 {
           profile: {
             givenName,
             familyName,
-            emails: [{handle:email}],
+            emails,
             guid:id,
             image: {imageUrl:image}
           }
         } = axiosResponse.data
 
         request.session.ctrine.profiles[this.providerName] = {
-          id, email, image, name: `${givenName} ${familyName}`
+          id, image,
+          name: `${givenName} ${familyName}`,
+          emails: emails.map(email => email.handle)
         }
       })
       .catch(error => {
