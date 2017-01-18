@@ -66,8 +66,8 @@ class AuthMiddleware {
 
     // Loop used to process additional steps required to authenticate the user.
     // This function may be called multiple times, the state/step must be stored
-    // in the session. Usually the callback route is a subroute of the auth route,
-    // it is important that this route gets processed first.
+    // in the session. Usually the callback route is a subroute of the auth route
+    // so, it is important that this route gets checked first.
     this.router.get(callbackRoute, this.processCallback)
     this.router.get(callbackRoute, this.authenticated)
 
@@ -87,8 +87,8 @@ class AuthMiddleware {
     let providerName = request.params.provider
     let provider = this._providers[providerName]
 
-    // Save the provider in the session which can be used later determine the
-    // provider used and execute the additional steps required.
+    // Save the provider in the session which can be used later to execute the
+    // additional steps required.
     request.session.currentAuthProvider = provider
 
     // Initiates authentication.
