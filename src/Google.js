@@ -38,9 +38,9 @@ export class Google extends OAuth2 {
       .then(axiosResponse => {
         let {
           displayName:name,
-          emails:[{value:email}],
+          emails: [{value:email}],
           id,
-          image:{url:image}
+          image: {url:image}
         } = axiosResponse.data
 
         request.session.ctrine.profiles[this.providerName] = {
@@ -49,7 +49,7 @@ export class Google extends OAuth2 {
       })
       .catch(error => {
         next(error)
-      });
+      })
   }
 }
 

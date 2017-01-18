@@ -13,7 +13,7 @@
 import OAuth2 from './OAuth2'
 
 /**
- * ATTENTION: To able to retrieve the email and name, the app needs read/write
+ * IMPORTANT: To able to retrieve the email and name, the app needs read/write
  * access to the public and private data for Profiles in the Social Directory.
  */
 export const DEFAULT_OPTIONS = {
@@ -28,9 +28,7 @@ export class Yahoo extends OAuth2 {
   getTokenRequestHeaders(request, response, next) {
     let base64Credentials = new Buffer(`${this.clientId}:${this.clientSecret}`)
       .toString('base64')
-    return {
-      Authorization: `Basic ${base64Credentials}`
-    }
+    return {Authorization: `Basic ${base64Credentials}`}
   }
 
   getTokenRequestQuery(request, response, next) {
@@ -43,18 +41,20 @@ export class Yahoo extends OAuth2 {
   }
 
   loadUserData(request, response, next) {
-    let {xoauth_yahoo_guid} = request.session.ctrine.tokens[this.providerName]
     let bearer = request.session.ctrine.bearers[this.providerName]
+    let {xoauth_yahoo_guid} = request.session.ctrine.tokens[this.providerName]
 
     bearer.get(`https://social.yahooapis.com/v1/user/${xoauth_yahoo_guid}/profile`)
       .then(axiosResponse => {
-        let {profile:{
-          givenName,
-          familyName,
-          emails:[{handle:email}],
-          guid:id,
-          image:{imageUrl:image}
-        }} = axiosResponse.data
+        let {
+          profile: {
+            givenName,
+            familyName,
+            emails: [{handle:email}],
+            guid:id,
+            image: {imageUrl:image}
+          }
+        } = axiosResponse.data
 
         request.session.ctrine.profiles[this.providerName] = {
           id, email, image, name: `${givenName} ${familyName}`
@@ -62,7 +62,7 @@ export class Yahoo extends OAuth2 {
       })
       .catch(error => {
         next(error)
-      });
+      })
   }
 }
 
