@@ -13,6 +13,7 @@
 import OAuth1a from './OAuth1a'
 
 export class Twitter extends OAuth1a {
+  // TODO
 }
 
 export default Twitter

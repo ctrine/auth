@@ -13,6 +13,7 @@
 import OAuth2 from './OAuth2'
 
 export class Facebook extends OAuth2 {
+  // TODO
 }
 
 export default Facebook
