@@ -68,16 +68,35 @@ class AuthMiddleware {
     // This function may be called multiple times, the state/step must be stored
     // in the session. Usually the callback route is a subroute of the auth route
     // so, it is important that this route gets checked first.
-    this.router.get(callbackRoute, this.processCallback)
-    this.router.get(callbackRoute, this.authenticated)
+    this.router.get(
+      callbackRoute,
+      this.processCallback,
+      this.authenticated
+    )
+
+    // Used to allow the callback as a subroute of the auth route.
+    function skipCallback(request, response, next) {
+      if (request.path == callbackRoute)
+        next('route')
+      else
+        next()
+    }
 
     // Authenticates the user. Some providers will require multiple steps which
     // will be processed in the callback route.
-    this.router.get(authRoute, this.authenticate)
-    this.router.get(authRoute, this.authenticated)
+    this.router.get(
+      authRoute,
+      skipCallback,
+      this.authenticate,
+      this.authenticated
+    )
 
-    this.router.post(authRoute, this.authenticate)
-    this.router.post(authRoute, this.authenticated)
+    this.router.post(
+      authRoute,
+      skipCallback,
+      this.authenticate,
+      this.authenticated
+    )
   }
 
   @autobind
@@ -95,6 +114,9 @@ class AuthMiddleware {
     provider.authenticate(request, response, next)
   }
 
+  /**
+   * The authentication has finished, now it needs to load the basic user profile.
+   */
   @autobind
   authenticated(request, response, next) {
     checkSessionKeys(request)
