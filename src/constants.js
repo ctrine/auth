@@ -42,7 +42,7 @@ export const EXPECTED_SESSION_KEYS = {
   nextAuthStep: null,
 
   /**
-   * Used to make http requests using the access tokens retrived.
+   * Used to make HTTP requests using the provider’s tokens.
    */
   bearers: {},
 
