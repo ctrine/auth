@@ -13,7 +13,7 @@
 import Axios from 'axios'
 import QueryString from 'querystring'
 
-import Bearer from './Bearer'
+import OAuth2Bearer from './OAuth2Bearer'
 
 /**
  * Abstract base class for OAuth2 authentication.
@@ -130,7 +130,7 @@ export class OAuth2 {
         request.session.ctrine.tokens[this.providerName] = axiosResponse.data
 
         // Saves a bearer for the provider in the session.
-        request.session.ctrine.bearers[this.providerName] = new Bearer(axiosResponse.data)
+        request.session.ctrine.bearers[this.providerName] = new OAuth2Bearer(axiosResponse.data)
 
         // Next step is to retrieve the user‘s data.
         next()
