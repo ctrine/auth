@@ -48,9 +48,9 @@ export class Yahoo extends OAuth2 {
       .then(axiosResponse => {
         let {
           profile: {
-            givenName,
-            familyName,
             emails,
+            familyName,
+            givenName,
             guid:id,
             image: {imageUrl:image}
           }
