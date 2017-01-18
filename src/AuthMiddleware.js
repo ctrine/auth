@@ -11,7 +11,7 @@
 // the License.
 
 import autobind from 'autobind-decorator'
-import deepAssign from 'deep-assign'
+import defaultAssign from 'object-defaults'
 import express from 'express'
 
 import {
@@ -21,12 +21,10 @@ import {
 } from './constants'
 
 /**
- * Make sure there’s a ctrine key in the session.
+ * Make sure the expected keys exists in the session.
  */
 function checkSessionKeys(request) {
-  request.session.ctrine = deepAssign(
-    {}, EXPECTED_SESSION_KEYS, request.session.ctrine
-  )
+  defaultAssign(request.session, EXPECTED_SESSION_KEYS)
 }
 
 /**
@@ -91,7 +89,7 @@ class AuthMiddleware {
 
     // Save the provider in the session which can be used later determine the
     // provider used and execute the additional steps required.
-    request.session.ctrine.currentAuthProvider = provider
+    request.session.currentAuthProvider = provider
 
     // Initiates authentication.
     provider.authenticate(request, response, next)
@@ -101,7 +99,7 @@ class AuthMiddleware {
   authenticated(request, response, next) {
     checkSessionKeys(request)
 
-    let providerName = request.session.ctrine.currentAuthProvider
+    let providerName = request.session.currentAuthProvider
     let provider = this._providers[providerName]
 
     provider.loadUserData(request, response, next)
@@ -111,7 +109,7 @@ class AuthMiddleware {
   processCallback(request, response, next) {
     checkSessionKeys(request)
 
-    let providerName = request.session.ctrine.currentAuthProvider
+    let providerName = request.session.currentAuthProvider
     let provider = this._providers[providerName]
 
     provider.processCallback(request, response, next)

@@ -17,7 +17,7 @@ import session from 'express-session'
 
 let app = express()
 
-// Session is required to store the user data and identify authentication steps.
+// Session is required to store the user data and authentication steps.
 app.use(session())
 
 app.use(
@@ -46,7 +46,7 @@ app.use(
  * API request.
  */
 app.get('/some-route', (request, response, next) => {
-  let bearer = request.session.ctrine.bearer['google']
+  let bearer = request.session.bearer['google']
 
   // User is not authenticated for google.
   if (!bearer)
@@ -58,34 +58,4 @@ app.get('/some-route', (request, response, next) => {
 
 // Other routes...
 
-/**
- * Available keys in ctrine.
- */
-const EXPECTED_SESSION_KEYS = {
-  /**
-   * Current provider doing the authentication.
-   */
-  currentAuthProvider: null,
-
-  /**
-   * Used by the current provider to determine the authentication step to be
-   * executed.
-   */
-  nextAuthStep: null,
-
-  /**
-   * Used to make http requests using the access tokens retrived.
-   */
-  bearers: {},
-
-  /**
-   * Loaded profiles for each provider.
-   */
-  profiles: {},
-
-  /**
-   * Retrieved tokens for each provider.
-   */
-  tokens: {}
-}
 ```
