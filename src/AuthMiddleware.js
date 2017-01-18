@@ -15,7 +15,7 @@ import deepAssign from 'deep-assign'
 import express from 'express'
 
 import {
-  AVAILABLE_STRATEGIES,
+  AVAILABLE_PROVIDERS,
   DEFAULT_OPTIONS,
   EXPECTED_SESSION_KEYS
 } from './constants'
@@ -30,7 +30,7 @@ function checkSessionKeys(request) {
 }
 
 /**
- * Middleware used to authenticate using Local and OAuth strategies.
+ * Middleware used to authenticate.
  */
 class AuthMiddleware {
   /**
@@ -44,9 +44,9 @@ class AuthMiddleware {
   _options = {}
 
   /**
-   * Configured strategies.
+   * Configured providers.
    */
-  _strategies = {}
+  _providers = {}
 
   constructor(options:Options) {
     this._options = {
@@ -57,10 +57,10 @@ class AuthMiddleware {
     let {authRoute, callbackRoute, domain, providers} = this._options
     let callbackUrl = `${domain}${callbackRoute}`
 
-    // Configure the strategies with the client’s credentials and the callback
-    // URL that can be used to process additional steps required by the strategy.
+    // Configure the providers with the client’s credentials and the callback
+    // URL that can be used to process additional steps.
     Object.entries(providers).forEach(([provider, config]) => {
-      this._strategies[provider] = new AVAILABLE_STRATEGIES[provider]({
+      this._providers[provider] = new AVAILABLE_PROVIDERS[provider]({
         callbackUrl,
         ...config
       })
@@ -73,7 +73,7 @@ class AuthMiddleware {
     this.router.get(callbackRoute, this.processCallback)
     this.router.get(callbackRoute, this.authenticated)
 
-    // Authenticates the user. Some strategies will require multiple steps which
+    // Authenticates the user. Some providers will require multiple steps which
     // will be processed in the callback route.
     this.router.get(authRoute, this.authenticate)
     this.router.get(authRoute, this.authenticated)
@@ -86,35 +86,35 @@ class AuthMiddleware {
   authenticate(request, response, next) {
     checkSessionKeys(request)
 
-    let provider = request.params.provider
-    let strategy = this._strategies[provider]
+    let providerName = request.params.provider
+    let provider = this._providers[providerName]
 
     // Save the provider in the session which can be used later determine the
-    // strategy used and execute the additional steps required.
+    // provider used and execute the additional steps required.
     request.session.ctrine.currentAuthProvider = provider
 
     // Initiates authentication.
-    strategy.authenticate(request, response, next)
+    provider.authenticate(request, response, next)
   }
 
   @autobind
   authenticated(request, response, next) {
     checkSessionKeys(request)
 
-    let provider = request.session.ctrine.currentAuthProvider
-    let strategy = this._strategies[provider]
+    let providerName = request.session.ctrine.currentAuthProvider
+    let provider = this._providers[providerName]
 
-    strategy.loadUserData(request, response, next)
+    provider.loadUserData(request, response, next)
   }
 
   @autobind
   processCallback(request, response, next) {
     checkSessionKeys(request)
 
-    let provider = request.session.ctrine.currentAuthProvider
-    let strategy = this._strategies[provider]
+    let providerName = request.session.ctrine.currentAuthProvider
+    let provider = this._providers[providerName]
 
-    strategy.processCallback(request, response, next)
+    provider.processCallback(request, response, next)
   }
 }
 

@@ -16,7 +16,7 @@ import Local from './Local'
 import Twitter from './Twitter'
 import Yahoo from './Yahoo'
 
-export const AVAILABLE_STRATEGIES = {
+export const AVAILABLE_PROVIDERS = {
   facebook: Facebook,
   google: Google,
   local: Local,
