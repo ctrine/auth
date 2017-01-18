@@ -14,11 +14,11 @@ import Axios from 'axios'
 import deepAssign from 'deep-assign'
 
 export class Bearer {
-  _headers = null
+  _defaultHeaders = null
   _tokens = null
 
-  constructor(tokens, headers={}) {
-    this._headers = headers
+  constructor(tokens, defaultHeaders={}) {
+    this._defaultHeaders = defaultHeaders
     this._tokens = tokens
   }
 
@@ -43,7 +43,7 @@ export class Bearer {
   }
 
   _getHeaders(headers={}) {
-    return deepAssign({}, this._headers, headers))
+    return deepAssign({}, this._defaultHeaders, headers)
   }
 }
 
