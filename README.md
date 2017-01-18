@@ -42,9 +42,13 @@ app.use(
   })
 )
 
-/**
- * API request.
- */
+// If express gets here, the authentication was successful and you can access
+// the basic profiles inside the session.
+app.get('/auth/callback', (request, response) => {
+  response.send(request.session.profiles)
+})
+
+// API request.
 app.get('/some-route', (request, response, next) => {
   let bearer = request.session.bearer['google']
 
