@@ -14,31 +14,36 @@ import Axios from 'axios'
 import deepAssign from 'deep-assign'
 
 export class Bearer {
-  constructor(accessToken, options={}) {
-    this.BEARER_HEADER = deepAssign(
-      {headers:{Authorization:`Bearer ${accessToken}`}},
-      options
-    )
+  _headers = null
+  _tokens = null
+
+  constructor(tokens, headers={}) {
+    this._headers = headers
+    this._tokens = tokens
   }
 
-  delete(url, options={}) {
-    return Axios.delete(url, deepAssign({}, this.BEARER_HEADER, options))
+  delete(url, headers={}) {
+    return Axios.delete(url, this._getHeaders(headers))
   }
 
-  get(url, options={}) {
-    return Axios.get(url, deepAssign({}, this.BEARER_HEADER, options))
+  get(url, headers={}) {
+    return Axios.get(url, this._getHeaders(headers))
   }
 
-  patch(url, options={}) {
-    return Axios.patch(url, deepAssign({}, this.BEARER_HEADER, options))
+  patch(url, headers={}) {
+    return Axios.patch(url, this._getHeaders(headers))
   }
 
-  post(url, options={}) {
-    return Axios.post(url, deepAssign({}, this.BEARER_HEADER, options))
+  post(url, headers={}) {
+    return Axios.post(url, this._getHeaders(headers))
   }
 
-  put(url, options={}) {
-    return Axios.put(url, deepAssign({}, this.BEARER_HEADER, options))
+  put(url, headers={}) {
+    return Axios.put(url, this._getHeaders(headers))
+  }
+
+  _getHeaders(headers={}) {
+    return deepAssign({}, this._headers, headers))
   }
 }
 

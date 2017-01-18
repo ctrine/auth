@@ -93,13 +93,12 @@ export class OAuth2 {
   }
 
   getTokenRequestQuery(request, response, next) {
-    let {code} = request.query
     return {
       client_id: this.clientId,
       client_secret: this.clientSecret,
       redirect_uri: this.callbackUrl,
-      code,
-      grant_type: 'authorization_code'
+      grant_type: 'authorization_code',
+      code: request.query.code
     }
   }
 
@@ -115,7 +114,9 @@ export class OAuth2 {
    */
   processCallback(request, response, next) {
     let headers = this.getTokenRequestHeaders()
-    let axiosInstance = !headers ? Axios : Axios.create({headers})
+    let axiosInstance = headers
+      ? Axios.create({headers})
+      : Axios
 
     // The query will be sent in the post body.
     let query = QueryString.stringify(
@@ -125,13 +126,11 @@ export class OAuth2 {
     // Exchange the code for the tokens.
     axiosInstance.post(this.tokenRequestUrl, query)
       .then(axiosResponse => {
-        let {access_token} = axiosResponse.data
-
         // Save the tokens in the session.
         request.session.ctrine.tokens[this.providerName] = axiosResponse.data
 
         // Saves a bearer for the provider in the session.
-        request.session.ctrine.bearers[this.providerName] = new Bearer(access_token)
+        request.session.ctrine.bearers[this.providerName] = new Bearer(axiosResponse.data)
 
         // Next step is to retrieve the user‘s data.
         next()
