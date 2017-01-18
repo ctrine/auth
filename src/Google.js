@@ -32,7 +32,7 @@ export class Google extends OAuth2 {
   }
 
   loadUserData(request, response, next) {
-    let bearer = request.session.ctrine.bearers[this.providerName]
+    let bearer = request.session.bearers[this.providerName]
 
     bearer.get('https://www.googleapis.com/plus/v1/people/me')
       .then(axiosResponse => {
@@ -43,10 +43,12 @@ export class Google extends OAuth2 {
           image: {url:image}
         } = axiosResponse.data
 
-        request.session.ctrine.profiles[this.providerName] = {
+        request.session.profiles[this.providerName] = {
           id, image, name,
           emails: emails.map(email => email.value)
         }
+
+        next()
       })
       .catch(error => {
         next(error)

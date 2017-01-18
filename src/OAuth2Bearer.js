@@ -12,6 +12,8 @@
 
 import deepAssign from 'deep-assign'
 
+import Bearer from './Bearer'
+
 export class OAuth2Bearer extends Bearer {
   constructor(tokens, defaultHeaders={}) {
     const BEARER_HEADER = {

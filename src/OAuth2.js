@@ -127,10 +127,10 @@ export class OAuth2 {
     axiosInstance.post(this.tokenRequestUrl, query)
       .then(axiosResponse => {
         // Save the tokens in the session.
-        request.session.ctrine.tokens[this.providerName] = axiosResponse.data
+        request.session.tokens[this.providerName] = axiosResponse.data
 
         // Saves a bearer for the provider in the session.
-        request.session.ctrine.bearers[this.providerName] = new OAuth2Bearer(axiosResponse.data)
+        request.session.bearers[this.providerName] = new OAuth2Bearer(axiosResponse.data)
 
         // Next step is to retrieve the user‘s data.
         next()

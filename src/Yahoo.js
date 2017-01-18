@@ -41,8 +41,8 @@ export class Yahoo extends OAuth2 {
   }
 
   loadUserData(request, response, next) {
-    let bearer = request.session.ctrine.bearers[this.providerName]
-    let {xoauth_yahoo_guid} = request.session.ctrine.tokens[this.providerName]
+    let bearer = request.session.bearers[this.providerName]
+    let {xoauth_yahoo_guid} = request.session.tokens[this.providerName]
 
     bearer.get(`https://social.yahooapis.com/v1/user/${xoauth_yahoo_guid}/profile`)
       .then(axiosResponse => {
@@ -56,11 +56,13 @@ export class Yahoo extends OAuth2 {
           }
         } = axiosResponse.data
 
-        request.session.ctrine.profiles[this.providerName] = {
+        request.session.profiles[this.providerName] = {
           id, image,
           name: `${givenName} ${familyName}`,
           emails: emails.map(email => email.handle)
         }
+
+        next()
       })
       .catch(error => {
         next(error)

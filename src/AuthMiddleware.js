@@ -89,7 +89,7 @@ class AuthMiddleware {
 
     // Save the provider in the session which can be used later to execute the
     // additional steps required.
-    request.session.currentAuthProvider = provider
+    request.session.currentAuthProvider = providerName
 
     // Initiates authentication.
     provider.authenticate(request, response, next)
