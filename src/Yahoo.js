@@ -36,7 +36,7 @@ export class Yahoo extends OAuth2 {
     return {Authorization: `Basic ${base64Credentials}`}
   }
 
-  getTokenRequestQuery(request, response, next) {
+  getTokenRequestParameters(request, response, next) {
     let {code} = request.query
     return {
       grant_type: 'authorization_code',
@@ -49,7 +49,7 @@ export class Yahoo extends OAuth2 {
     let bearer = request.session.bearers[this.providerName]
     let {xoauth_yahoo_guid} = request.session.tokens[this.providerName]
 
-    bearer.get(`https://social.yahooapis.com/v1/user/${xoauth_yahoo_guid}/profile`)
+    return bearer.get(`https://social.yahooapis.com/v1/user/${xoauth_yahoo_guid}/profile`)
       .then(axiosResponse => {
         let {
           profile: {
@@ -61,16 +61,11 @@ export class Yahoo extends OAuth2 {
           }
         } = axiosResponse.data
 
-        request.session.profiles[this.providerName] = {
+        return {
           id, image,
           name: `${givenName} ${familyName}`,
           emails: emails.map(email => email.handle)
         }
-
-        next()
-      })
-      .catch(error => {
-        next(new Error(error))
       })
   }
 }

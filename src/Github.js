@@ -33,7 +33,7 @@ export class Github extends OAuth2 {
   loadUserData(request, response, next) {
     let bearer = request.session.bearers[this.providerName]
 
-    bearer.get('https://api.github.com/user')
+    return bearer.get('https://api.github.com/user')
       .then(axiosResponse => {
         let {
           name,
@@ -42,14 +42,7 @@ export class Github extends OAuth2 {
           avatar_url:image
         } = axiosResponse.data
 
-        request.session.profiles[this.providerName] = {
-          id, image, name, emails: [email]
-        }
-
-        next()
-      })
-      .catch(error => {
-        next(new Error(error))
+        return {id, image, name, emails: [email]}
       })
   }
 }

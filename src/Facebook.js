@@ -29,7 +29,7 @@ export class Facebook extends OAuth2 {
   loadUserData(request, response, next) {
     let bearer = request.session.bearers[this.providerName]
 
-    bearer.get('https://graph.facebook.com/v2.8/me?fields=email,name,picture')
+    return bearer.get('https://graph.facebook.com/v2.8/me?fields=email,name,picture')
       .then(axiosResponse => {
         let {
           name,
@@ -40,14 +40,7 @@ export class Facebook extends OAuth2 {
           }
         } = axiosResponse.data
 
-        request.session.profiles[this.providerName] = {
-          id, image, name, emails: [email]
-        }
-
-        next()
-      })
-      .catch(error => {
-        next(new Error(error))
+        return {id, image, name, emails: [email]}
       })
   }
 }
