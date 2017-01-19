@@ -17,18 +17,18 @@ export type Profile = {
 }
 
 export type SuccessData = {
-  provider:string,
+  providerName:string,
   tokens:Object,
   profile:Profile
 }
 
 export type ErrorData = {
-  provider:string,
+  providerName:string,
   error:Object
 }
 
-export type SuccessCallback = (data:SuccessData) => void
-export type ErrorCallback = (data:ErrorData) => void
+export type SuccessCallback = (data:SuccessData, response, next) => void
+export type ErrorCallback = (data:ErrorData, response, next) => void
 
 // TODO
 export type OAuth1aOptions = {
@@ -74,7 +74,7 @@ export type Options = {
    * The credentials were invalid or the user did not authorize access to the
    * profile data.
    */
-  onAccessDenied:ErrorCallback,
+  onAuthDenied:ErrorCallback,
 
   /**
    * Any other error.
