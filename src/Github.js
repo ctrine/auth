@@ -43,8 +43,7 @@ export class Github extends OAuth2 {
         } = axiosResponse.data
 
         request.session.profiles[this.providerName] = {
-          id, image, name,
-          emails: [email]
+          id, image, name, emails: [email]
         }
 
         next()
