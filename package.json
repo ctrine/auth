@@ -1,6 +1,6 @@
 {
   "name": "ctrine-auth",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Simple authentication for ExpressJS.",
   "license": "Apache-2.0",
   "main": "build",
@@ -55,6 +55,8 @@
   "dependencies": {
     "autobind-decorator": "^1.3.4",
     "axios": "^0.15.3",
+    "bluebird": "^3.4.7",
+    "es6-error": "^4.0.1",
     "object-defaults": "^0.1.0"
   },
   "peerDependencies": {
