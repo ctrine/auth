@@ -103,7 +103,7 @@ export class OAuth2 extends OAuth {
         // Next step is to retrieve the user‘s data.
         next()
       }).catch(error => {
-        next(error)
+        next(new Error(error))
       })
   }
 }

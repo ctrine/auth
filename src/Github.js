@@ -49,7 +49,7 @@ export class Github extends OAuth2 {
         next()
       })
       .catch(error => {
-        next(error)
+        next(new Error(error))
       })
   }
 }

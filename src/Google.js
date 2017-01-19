@@ -46,7 +46,7 @@ export class Google extends OAuth2 {
         next()
       })
       .catch(error => {
-        next(error)
+        next(new Error(error))
       })
   }
 }
