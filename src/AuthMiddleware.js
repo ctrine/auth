@@ -75,31 +75,23 @@ class AuthMiddleware {
     this.router.get(
       callbackRoute,
       this.processCallback,
-      this.authenticated
+      this._authenticated
     )
-
-    // Used to allow the callback as a subroute of the auth route.
-    function skipCallback(request, response, next) {
-      if (request.path == callbackRoute)
-        next('route')
-      else
-        next()
-    }
 
     // Authenticates the user. Some providers will require multiple steps which
     // will be processed in the callback route.
     this.router.get(
       authRoute,
-      skipCallback,
+      this._skipCallback,
       this.authenticate,
-      this.authenticated
+      this._authenticated
     )
 
     this.router.post(
       authRoute,
-      skipCallback,
+      this._skipCallback,
       this.authenticate,
-      this.authenticated
+      this._authenticated
     )
   }
 
@@ -121,28 +113,6 @@ class AuthMiddleware {
     provider.authenticate(request, response, next)
   }
 
-  /**
-   * The authentication has finished, now it needs to load the basic user profile.
-   */
-  @autobind
-  authenticated(request, response, next) {
-    checkSessionKeys(request)
-
-    let providerName = request.session.currentAuthProvider
-    let provider = this._providers[providerName]
-
-    provider.loadUserData(request, response, next)
-      .then(profile => {
-        request.session.profiles[providerName] = profile
-        let successData = {providerName, profile}
-        this._options.onSuccess(successData, response, next)
-      })
-      .catch(error => {
-        let errorData = {providerName, error}
-        this._options.onError(errorData, response, next)
-      })
-  }
-
   @autobind
   processCallback(request, response, next) {
     checkSessionKeys(request)
@@ -158,12 +128,43 @@ class AuthMiddleware {
         let errorData = {providerName, error}
 
         if (error instanceof AuthDenied) {
-          this._options.onAuthDenied(errorData, response, next)
+          this._options.onAuthDenied(errorData, response)
           return
         }
 
-        this._options.onError(errorData, response, next)
+        this._options.onError(errorData, response)
       })
+  }
+
+  /**
+   * The authentication has finished, now it needs to load the basic user profile.
+   */
+  @autobind
+  _authenticated(request, response, next) {
+    checkSessionKeys(request)
+
+    let providerName = request.session.currentAuthProvider
+    let provider = this._providers[providerName]
+
+    provider.loadUserData(request, response, next)
+      .then(profile => {
+        request.session.profiles[providerName] = profile
+        let successData = {providerName, profile}
+        this._options.onSuccess(successData, response)
+      })
+      .catch(error => {
+        let errorData = {providerName, error}
+        this._options.onError(errorData, response)
+      })
+  }
+
+  // Used to allow the callback as a subroute of the auth route.
+  @autobind
+  _skipCallback(request, response, next) {
+    if (request.path == this._options.callbackRoute)
+      next('route')
+    else
+      next()
   }
 }
 

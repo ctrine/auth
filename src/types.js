@@ -27,8 +27,8 @@ export type ErrorData = {
   error:Object
 }
 
-export type SuccessCallback = (data:SuccessData, response, next) => void
-export type ErrorCallback = (data:ErrorData, response, next) => void
+export type SuccessCallback = (data:SuccessData, response) => void
+export type ErrorCallback = (data:ErrorData, response) => void
 
 // TODO
 export type OAuth1aOptions = {
