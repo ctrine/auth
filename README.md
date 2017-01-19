@@ -29,11 +29,11 @@ app.use(
     // Route to process the callback.
     callbackRoute: '/auth/callback',
     // Called when the authentication completes.
-    onSuccess: ({providerName, profile}, response) => {
+    onSuccess: (request, response, {providerName, profile}) => {
       response.send(profile)
     },
     // Called when the user cancelled the authentication process.
-    onAuthDenied: ({providerName, error}, response) => {
+    onAuthDenied: (request, response, {providerName, error}) => {
       response.send('denied')
     },
     // You just need to add the client ID and secret.

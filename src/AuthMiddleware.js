@@ -128,11 +128,11 @@ class AuthMiddleware {
         let errorData = {providerName, error}
 
         if (error instanceof AuthDenied) {
-          this._options.onAuthDenied(errorData, response)
+          this._options.onAuthDenied(request, response, errorData)
           return
         }
 
-        this._options.onError(errorData, response)
+        this._options.onError(request, response, errorData)
       })
   }
 
@@ -150,11 +150,11 @@ class AuthMiddleware {
       .then(profile => {
         request.session.profiles[providerName] = profile
         let successData = {providerName, profile}
-        this._options.onSuccess(successData, response)
+        this._options.onSuccess(request, response, successData)
       })
       .catch(error => {
         let errorData = {providerName, error}
-        this._options.onError(errorData, response)
+        this._options.onError(request, response, errorData)
       })
   }
 

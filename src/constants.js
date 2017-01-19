@@ -28,18 +28,18 @@ export const AVAILABLE_PROVIDERS = {
   yahoo: Yahoo
 }
 
-function defaultOnSuccess({providerName, profile}, response) {
+function defaultOnSuccess(request, response, {providerName, profile}) {
   response.json({providerName, profile})
 }
 
-function defaultOnAuthDenied({providerName, error}, response) {
+function defaultOnAuthDenied(request, response, {providerName, error}) {
   response.status(401).json({
     providerName,
     error: error.stack || error
   })
 }
 
-function defaultOnError({providerName, error}, response) {
+function defaultOnError(request, response, {providerName, error}) {
   response.status(500).json({
     providerName,
     error: error.stack || error
