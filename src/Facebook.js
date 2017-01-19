@@ -10,10 +10,46 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+import defaultAssign from 'object-defaults'
+
 import OAuth2 from './OAuth2'
 
+export const DEFAULT_OPTIONS = {
+  authUrl: 'https://www.facebook.com/dialog/oauth',
+  scope: 'public_profile email',
+  providerName: 'facebook',
+  tokenRequestUrl: 'https://graph.facebook.com/v2.8/oauth/access_token'
+}
+
 export class Facebook extends OAuth2 {
-  // TODO
+  constructor(options) {
+    super(defaultAssign(options, DEFAULT_OPTIONS))
+  }
+
+  loadUserData(request, response, next) {
+    let bearer = request.session.bearers[this.providerName]
+
+    bearer.get('https://graph.facebook.com/v2.8/me?fields=email,name,picture')
+      .then(axiosResponse => {
+        let {
+          name,
+          email,
+          id,
+          picture: {
+            data: {url:image}
+          }
+        } = axiosResponse.data
+
+        request.session.profiles[this.providerName] = {
+          id, image, name, emails: [email]
+        }
+
+        next()
+      })
+      .catch(error => {
+        next(new Error(error))
+      })
+  }
 }
 
 export default Facebook
