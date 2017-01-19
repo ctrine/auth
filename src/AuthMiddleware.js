@@ -121,7 +121,8 @@ class AuthMiddleware {
     let provider = this._providers[providerName]
 
     provider.processCallback(request, response, next)
-      .then(tokens => {
+      .then(({bearer, tokens}) => {
+        request.session.bearers[providerName] = bearer
         request.session.tokens[providerName] = tokens
       })
       .catch(error => {

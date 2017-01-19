@@ -84,7 +84,6 @@ export class OAuth2 extends OAuth {
 
     if (!error)
       return this.requestToken(request, response, next)
-        .then(() => next())
 
     if (error == 'access_denied') {
       return Promise.reject(new AuthDenied(error_description))
@@ -109,8 +108,9 @@ export class OAuth2 extends OAuth {
     return axiosInstance.post(this.tokenRequestUrl, parameters)
       .then(axiosResponse => {
         let tokens = axiosResponse.data
-        request.session.bearers[this.providerName] = new OAuth2Bearer(tokens)
-        request.session.tokens[this.providerName] = tokens
+        let bearer = new OAuth2Bearer(tokens)
+
+        return {bearer, tokens}
       })
   }
 }
