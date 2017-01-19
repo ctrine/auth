@@ -11,7 +11,7 @@
 // the License.
 
 import Axios from 'axios'
-import deepAssign from 'deep-assign'
+import defaultAssign from 'object-defaults'
 
 export class Bearer {
   _defaultHeaders = null
@@ -43,7 +43,7 @@ export class Bearer {
   }
 
   _getHeaders(headers={}) {
-    return deepAssign({}, this._defaultHeaders, headers)
+    return defaultAssign(headers, this._defaultHeaders)
   }
 }
 

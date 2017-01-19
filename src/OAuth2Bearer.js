@@ -10,18 +10,18 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-import deepAssign from 'deep-assign'
+import defaultAssign from 'object-defaults'
 
 import Bearer from './Bearer'
 
 export class OAuth2Bearer extends Bearer {
   constructor(tokens, defaultHeaders={}) {
-    const BEARER_HEADER = {
+    const DEFAULT_BEARER_HEADER = {
       headers: {
         Authorization: `Bearer ${tokens.access_token}`
       }
     }
-    super(tokens, deepAssign(BEARER_HEADER, defaultHeaders))
+    super(tokens, defaultAssign(defaultHeaders, DEFAULT_BEARER_HEADER))
   }
 }
 
