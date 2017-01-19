@@ -42,14 +42,16 @@ export class Provider {
    * Loads the authenticated user ID, profile picture, full name and emails.
    * This data must be stored inside “profiles” key for each provider.
    */
-  loadUserData(request:Object, response:Object, next:Function):void {
+  loadUserData(request:Object, response:Object, next:Function):Promise {
     throw new Error('Not implemented.')
   }
 
   /**
-   * Loop used to process additional steps.
+   * Loop used to process additional steps. Calling next will indicate that
+   * the authentication has finished and the system needs to load the user‘s
+   * basic profile.
    */
-  processCallback(request:Object, response:Object, next:Function):void {
+  processCallback(request:Object, response:Object, next:Function):Promise {
     throw new Error('Not implemented.')
   }
 }
