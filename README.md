@@ -27,9 +27,25 @@ app.use(
     // The :provider is required to identify the authentication intended.
     authRoute: '/auth/:provider',
     // Route to process the callback.
-    callbackRoute: '/auth/callback'
+    callbackRoute: '/auth/callback',
+    // Called when the authentication completes.
+    onSuccess: ({providerName, profile}, response) => {
+      response.send(profile)
+    },
+    // Called when the user cancelled the authentication process.
+    onAuthDenied: ({providerName, error}, response) => {
+      response.send('denied')
+    },
     // You just need to add the client ID and secret.
     providers: {
+      facebook: {
+        clientId: 'abc...',
+        clientSecret: 'abc...'
+      },
+      github: {
+        clientId: 'abc...',
+        clientSecret: 'abc...'
+      },
       google: {
         clientId: 'abc...',
         clientSecret: 'abc...'
@@ -41,12 +57,6 @@ app.use(
     }
   })
 )
-
-// If express gets here, the authentication was successful and you can access
-// the basic profiles inside the session.
-app.get('/auth/callback', (request, response) => {
-  response.send(request.session.profiles)
-})
 
 // API request.
 app.get('/some-route', (request, response, next) => {
