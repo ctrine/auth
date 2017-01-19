@@ -1,7 +1,7 @@
 {
   "name": "ctrine-auth",
   "version": "2.0.0",
-  "description": "Social authentication for ExpressJS.",
+  "description": "Simple authentication for ExpressJS.",
   "license": "Apache-2.0",
   "main": "build",
   "scripts": {
@@ -43,6 +43,7 @@
   "homepage": "https://github.com/ctrine/auth#readme",
   "keywords": [
     "authentication",
+    "simple",
     "social",
     "express"
   ],
