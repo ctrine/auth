@@ -10,6 +10,8 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+import defaultAssign from 'object-defaults'
+
 import OAuth2 from './OAuth2'
 
 /**
@@ -17,13 +19,16 @@ import OAuth2 from './OAuth2'
  * access to the public and private data for Profiles in the Social Directory.
  */
 export const DEFAULT_OPTIONS = {
-  scope: 'sdpp-w'
+  authUrl: 'https://api.login.yahoo.com/oauth2/request_auth',
+  providerName: 'yahoo',
+  scope: 'sdpp-w',
+  tokenRequestUrl: 'https://api.login.yahoo.com/oauth2/get_token'
 }
 
 export class Yahoo extends OAuth2 {
-  providerName = 'yahoo'
-  authUrl = 'https://api.login.yahoo.com/oauth2/request_auth'
-  tokenRequestUrl = 'https://api.login.yahoo.com/oauth2/get_token'
+  constructor(options) {
+    super(defaultAssign(options, DEFAULT_OPTIONS))
+  }
 
   getTokenRequestHeaders(request, response, next) {
     let base64Credentials = new Buffer(`${this.clientId}:${this.clientSecret}`)

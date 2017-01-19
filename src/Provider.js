@@ -10,22 +10,48 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-export interface Provider {
+/**
+ * Abstract class representing a provider.
+ */
+export class Provider {
+  /**
+   * URL used to process additional steps required by the provider.
+   */
+  callbackUrl = null
+
+  /**
+   * Provider’s name used to store the tokens.
+   */
+  providerName = null
+
+  constructor(options) {
+    let {callbackUrl, providerName} = options
+
+    this.callbackUrl = callbackUrl
+    this.providerName = providerName
+  }
+
   /**
    * Authenticates or initiates authentication.
    */
-  authenticate(request:Object, response:Object, next:Function):void;
+  authenticate(request:Object, response:Object, next:Function):void {
+    throw new Error('Not implemented.')
+  }
 
   /**
    * Loads the authenticated user ID, profile picture, full name and emails.
    * This data must be stored inside “profiles” key for each provider.
    */
-  loadUserData(request:Object, response:Object, next:Function):void;
+  loadUserData(request:Object, response:Object, next:Function):void {
+    throw new Error('Not implemented.')
+  }
 
   /**
    * Loop used to process additional steps.
    */
-  processCallback(request:Object, response:Object, next:Function):void;
+  processCallback(request:Object, response:Object, next:Function):void {
+    throw new Error('Not implemented.')
+  }
 }
 
 export default Provider

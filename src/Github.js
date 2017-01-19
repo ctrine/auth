@@ -10,25 +10,20 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-import Axios from 'axios'
+import defaultAssign from 'object-defaults'
 
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
-  scope: 'user'
+  authUrl: 'https://github.com/login/oauth/authorize',
+  providerName: 'github',
+  scope: 'user',
+  tokenRequestUrl: 'https://github.com/login/oauth/access_token'
 }
 
 export class Github extends OAuth2 {
-  providerName = 'github'
-  authUrl = 'https://github.com/login/oauth/authorize'
-  tokenRequestUrl = 'https://github.com/login/oauth/access_token'
-
   constructor(options) {
-    options = {
-      ...DEFAULT_OPTIONS,
-      ...options
-    }
-    super(options)
+    super(defaultAssign(options, DEFAULT_OPTIONS))
   }
 
   getTokenRequestHeaders(request, response, next) {

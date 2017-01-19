@@ -10,25 +10,20 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-import Axios from 'axios'
+import defaultAssign from 'object-defaults'
 
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
-  scope: 'email profile'
+  authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+  scope: 'email profile',
+  providerName: 'google',
+  tokenRequestUrl: 'https://www.googleapis.com/oauth2/v4/token'
 }
 
 export class Google extends OAuth2 {
-  providerName = 'google'
-  authUrl = 'https://accounts.google.com/o/oauth2/v2/auth'
-  tokenRequestUrl = 'https://www.googleapis.com/oauth2/v4/token'
-
   constructor(options) {
-    options = {
-      ...DEFAULT_OPTIONS,
-      ...options
-    }
-    super(options)
+    super(defaultAssign(options, DEFAULT_OPTIONS))
   }
 
   loadUserData(request, response, next) {

@@ -13,22 +13,13 @@
 import Axios from 'axios'
 import QueryString from 'querystring'
 
+import OAuth from './OAuth'
 import OAuth2Bearer from './OAuth2Bearer'
 
 /**
  * Abstract base class for OAuth2 authentication.
  */
-export class OAuth2 {
-  /**
-   * Provider’s name used to store the tokens.
-   */
-  providerName = null
-
-  /**
-   * URL used to process additional steps required by the strategy.
-   */
-  callbackUrl = null
-
+export class OAuth2 extends OAuth {
   /**
    * Client’s ID.
    */
@@ -39,30 +30,13 @@ export class OAuth2 {
    */
   clientSecret = null
 
-  /**
-   * API access required.
-   */
-  scope = null
+  constructor(options) {
+    super(options)
 
-  /**
-   * Authentication request URL.
-   */
-  authUrl = null
+    let {clientId, clientSecret} = options
 
-  /**
-   * Token request URL.
-   */
-  tokenRequestUrl = null
-
-  constructor({callbackUrl, clientId, clientSecret, scope}) {
-    this.callbackUrl = callbackUrl
     this.clientId = clientId
     this.clientSecret = clientSecret
-
-    if (Array.isArray(scope))
-      this.scope = scope.join(' ')
-    else
-      this.scope = scope
   }
 
   /**
