@@ -55,6 +55,9 @@ class AuthMiddleware {
     let {authRoute, callbackRoute, domain, providers} = this._options
     let callbackUrl = `${domain}${callbackRoute}`
 
+    if (!providers)
+      throw new Error('No providers configured.')
+
     // Configure the providers with the client’s credentials and the callback
     // URL that can be used to process additional steps.
     Object.entries(providers).forEach(([provider, config]) => {
@@ -105,6 +108,9 @@ class AuthMiddleware {
 
     let providerName = request.params.provider
     let provider = this._providers[providerName]
+
+    if (!provider)
+      throw new Error(`Provider "${providerName}" settings not found.`)
 
     // Save the provider in the session which can be used later to execute the
     // additional steps required.
