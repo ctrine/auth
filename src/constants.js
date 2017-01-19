@@ -11,6 +11,7 @@
 // the License.
 
 import Facebook from './Facebook'
+import Github from './Github'
 import Google from './Google'
 import Local from './Local'
 import Twitter from './Twitter'
@@ -18,6 +19,7 @@ import Yahoo from './Yahoo'
 
 export const AVAILABLE_PROVIDERS = {
   facebook: Facebook,
+  github: Github,
   google: Google,
   local: Local,
   twitter: Twitter,
