@@ -17,14 +17,14 @@ import express from 'express'
 import {
   AVAILABLE_PROVIDERS,
   DEFAULT_OPTIONS,
-  EXPECTED_SESSION_KEYS
+  DEFAULT_SESSION_KEYS
 } from './constants'
 
 /**
  * Make sure the expected keys exists in the session.
  */
 function checkSessionKeys(request) {
-  defaultAssign(request.session, EXPECTED_SESSION_KEYS)
+  defaultAssign(request.session, DEFAULT_SESSION_KEYS)
 }
 
 /**

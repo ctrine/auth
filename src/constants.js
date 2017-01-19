@@ -13,6 +13,7 @@
 import Facebook from './Facebook'
 import Github from './Github'
 import Google from './Google'
+import Linkedin from './Linkedin'
 import Local from './Local'
 import Twitter from './Twitter'
 import Yahoo from './Yahoo'
@@ -21,6 +22,7 @@ export const AVAILABLE_PROVIDERS = {
   facebook: Facebook,
   github: Github,
   google: Google,
+  linkedin: Linkedin,
   local: Local,
   twitter: Twitter,
   yahoo: Yahoo
@@ -31,7 +33,7 @@ export const DEFAULT_OPTIONS = {
   callbackRoute: '/auth/callback'
 }
 
-export const EXPECTED_SESSION_KEYS = {
+export const DEFAULT_SESSION_KEYS = {
   /**
    * Current provider doing the authentication.
    */
