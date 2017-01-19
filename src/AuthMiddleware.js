@@ -14,6 +14,7 @@ import autobind from 'autobind-decorator'
 import defaultAssign from 'object-defaults'
 import express from 'express'
 
+import AuthDenied from './AuthDenied'
 import {
   AVAILABLE_PROVIDERS,
   DEFAULT_OPTIONS,
@@ -131,6 +132,15 @@ class AuthMiddleware {
     let provider = this._providers[providerName]
 
     provider.loadUserData(request, response, next)
+      .then(profile => {
+        request.session.profiles[providerName] = profile
+        let successData = {providerName, profile}
+        this._options.onSuccess(successData, response, next)
+      })
+      .catch(error => {
+        let errorData = {providerName, error}
+        this._options.onError(errorData, response, next)
+      })
   }
 
   @autobind
@@ -141,6 +151,19 @@ class AuthMiddleware {
     let provider = this._providers[providerName]
 
     provider.processCallback(request, response, next)
+      .then(tokens => {
+        request.session.tokens[providerName] = tokens
+      })
+      .catch(error => {
+        let errorData = {providerName, error}
+
+        if (error instanceof AuthDenied) {
+          this._options.onAuthDenied(errorData, response, next)
+          return
+        }
+
+        this._options.onError(errorData, response, next)
+      })
   }
 }
 

@@ -11,8 +11,10 @@
 // the License.
 
 import Axios from 'axios'
+import Promise from 'bluebird'
 import QueryString from 'querystring'
 
+import AuthDenied from './AuthDenied'
 import OAuth from './OAuth'
 import OAuth2Bearer from './OAuth2Bearer'
 
@@ -43,14 +45,14 @@ export class OAuth2 extends OAuth {
     if (!this.authUrl)
       throw new Error('Auth URL not defined.')
 
-    let query = QueryString.stringify(
-      this.getAuthQuery(request, response, next)
+    let parameters = QueryString.stringify(
+      this.getAuthParameters(request, response, next)
     )
 
-    response.redirect(`${this.authUrl}?${query}`)
+    response.redirect(`${this.authUrl}?${parameters}`)
   }
 
-  getAuthQuery(request, response, next) {
+  getAuthParameters(request, response, next) {
     return {
       client_id: this.clientId,
       redirect_uri: this.callbackUrl,
@@ -63,7 +65,7 @@ export class OAuth2 extends OAuth {
     // Most providers don’t require custom headers.
   }
 
-  getTokenRequestQuery(request, response, next) {
+  getTokenRequestParameters(request, response, next) {
     return {
       client_id: this.clientId,
       client_secret: this.clientSecret,
@@ -77,33 +79,38 @@ export class OAuth2 extends OAuth {
     throw new Error('Not implemented.')
   }
 
-  /**
-   * The callback is called to exchange the code for an actual token.
-   */
   processCallback(request, response, next) {
+    let {error, error_description} = request.query
+
+    if (!error)
+      return this.requestToken(request, response, next)
+        .then(() => next())
+
+    if (error == 'access_denied') {
+      return Promise.reject(new AuthDenied(error_description))
+    }
+
+    return Promise.reject(new Error(error_description))
+  }
+
+  /**
+   * Exchange the code for the tokens.
+   */
+  requestToken(request, response, next) {
     let headers = this.getTokenRequestHeaders()
     let axiosInstance = headers
       ? Axios.create({headers})
       : Axios
 
-    // The query will be sent in the post body.
-    let query = QueryString.stringify(
-      this.getTokenRequestQuery(request, response, next)
+    let parameters = QueryString.stringify(
+      this.getTokenRequestParameters(request, response, next)
     )
 
-    // Exchange the code for the tokens.
-    axiosInstance.post(this.tokenRequestUrl, query)
+    return axiosInstance.post(this.tokenRequestUrl, parameters)
       .then(axiosResponse => {
-        // Save the tokens in the session.
-        request.session.tokens[this.providerName] = axiosResponse.data
-
-        // Saves a bearer for the provider in the session.
-        request.session.bearers[this.providerName] = new OAuth2Bearer(axiosResponse.data)
-
-        // Next step is to retrieve the user‘s data.
-        next()
-      }).catch(error => {
-        next(new Error(error))
+        let tokens = axiosResponse.data
+        request.session.bearers[this.providerName] = new OAuth2Bearer(tokens)
+        request.session.tokens[this.providerName] = tokens
       })
   }
 }
