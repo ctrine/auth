@@ -39,9 +39,6 @@ export class OAuth2 extends OAuth {
     this.clientSecret = clientSecret
   }
 
-  /**
-   * Initiates the authentication, sends the user to the provider.
-   */
   authenticate(request, response, next) {
     if (!this.authUrl)
       throw new Error('Auth URL not defined.')
@@ -76,9 +73,6 @@ export class OAuth2 extends OAuth {
     }
   }
 
-  /**
-   * Must be implemented in a subclass.
-   */
   loadUserData(request, response, next) {
     throw new Error('Not implemented.')
   }
