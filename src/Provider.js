@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-export interface Strategy {
+export interface Provider {
   /**
    * Authenticates or initiates authentication.
    */
@@ -28,4 +28,4 @@ export interface Strategy {
   processCallback(request:Object, response:Object, next:Function):void;
 }
 
-export default Strategy
+export default Provider
