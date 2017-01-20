@@ -126,14 +126,15 @@ class AuthMiddleware {
         request.session.tokens[providerName] = tokens
       })
       .catch(error => {
+        request.session.currentAuthProvider = null
+        request.session.nextAuthStep = null
+
         let errorData = {providerName, error}
 
-        if (error instanceof AuthDenied) {
+        if (error instanceof AuthDenied)
           this._options.onAuthDenied(request, response, errorData)
-          return
-        }
-
-        this._options.onError(request, response, errorData)
+        else
+          this._options.onError(request, response, errorData)
       })
   }
 
@@ -149,12 +150,20 @@ class AuthMiddleware {
 
     provider.loadUserData(request, response, next)
       .then(profile => {
-        request.session.profiles[providerName] = profile
         let successData = {providerName, profile}
+
+        request.session.currentAuthProvider = null
+        request.session.nextAuthStep = null
+        request.session.profiles[providerName] = profile
+
         this._options.onSuccess(request, response, successData)
       })
       .catch(error => {
         let errorData = {providerName, error}
+
+        request.session.currentAuthProvider = null
+        request.session.nextAuthStep = null
+
         this._options.onError(request, response, errorData)
       })
   }
