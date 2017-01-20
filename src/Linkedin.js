@@ -21,6 +21,7 @@ export const DEFAULT_OPTIONS = {
   tokenRequestUrl: ''
 }
 
+// TODO
 export class Linkedin extends OAuth2 {
   constructor(options) {
     super(defaultAssign(options, DEFAULT_OPTIONS))
