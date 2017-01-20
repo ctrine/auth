@@ -124,6 +124,7 @@ class AuthMiddleware {
       .then(({bearer, tokens}) => {
         request.session.bearers[providerName] = bearer
         request.session.tokens[providerName] = tokens
+        next()
       })
       .catch(error => {
         request.session.currentAuthProvider = null
