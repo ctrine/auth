@@ -109,7 +109,6 @@ export class OAuth2 extends OAuth {
       .then(axiosResponse => {
         let tokens = axiosResponse.data
         let bearer = new OAuth2Bearer(tokens)
-
         return {bearer, tokens}
       })
   }
