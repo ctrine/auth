@@ -32,7 +32,7 @@ app.use(
     onSuccess: (request, response, {providerName, profile}) => {
       response.send(profile)
     },
-    // Called when the user did not allowed the app to access to the his data.
+    // Called when the user did not allowed the app to access his data.
     onAuthDenied: (request, response, {providerName, error}) => {
       response.send('denied')
     },
