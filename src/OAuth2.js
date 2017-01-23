@@ -17,11 +17,12 @@ import QueryString from 'querystring'
 import AuthDenied from './AuthDenied'
 import OAuth from './OAuth'
 import OAuth2Bearer from './OAuth2Bearer'
+import Provider from './Provider'
 
 /**
  * Abstract base class for OAuth2 authentication.
  */
-export class OAuth2 extends OAuth {
+export class OAuth2 extends Provider {
   /**
    * Client’s ID.
    */
@@ -32,13 +33,35 @@ export class OAuth2 extends OAuth {
    */
   clientSecret = null
 
+  /**
+   * Authentication request URL.
+   */
+  authUrl = null
+
+  /**
+   * Access required.
+   */
+  scope = null
+
+  /**
+   * Token request URL.
+   */
+  tokenRequestUrl = null
+
   constructor(options) {
     super(options)
 
-    let {clientId, clientSecret} = options
+    let {authUrl, clientId, clientSecret, scope, tokenRequestUrl} = options
 
     this.clientId = clientId
     this.clientSecret = clientSecret
+    this.authUrl = authUrl
+    this.tokenRequestUrl = tokenRequestUrl
+
+    if (Array.isArray(scope))
+      this.scope = scope.join(' ')
+    else
+      this.scope = scope
   }
 
   authenticate(request, response, next) {
