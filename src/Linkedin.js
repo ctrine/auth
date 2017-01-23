@@ -15,16 +15,36 @@ import defaultAssign from 'object-defaults'
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
-  authUrl: '',
+  authUrl: 'https://www.linkedin.com/oauth/v2/authorization',
   providerName: 'linkedin',
-  scope: '',
-  tokenRequestUrl: ''
+  scope: 'r_basicprofile r_emailaddress',
+  tokenRequestUrl: 'https://www.linkedin.com/oauth/v2/accessToken'
 }
 
-// TODO
 export class Linkedin extends OAuth2 {
   constructor(options) {
     super(defaultAssign(options, DEFAULT_OPTIONS))
+  }
+
+  loadUserData(request, response, next) {
+    let bearer = request.session.bearers[this.providerName]
+
+    return bearer.get('https://api.linkedin.com/v1/people/~:(id,email-address,picture-url,first-name,last-name)?format=json')
+      .then(axiosResponse => {
+        let {
+          firstName,
+          lastName,
+          emailAddress:email,
+          id,
+          pictureUrl:image
+        } = axiosResponse.data
+
+        return {
+          id, image,
+          name: `${firstName} ${lastName}`,
+          emails: [email]
+        }
+      })
   }
 }
 
