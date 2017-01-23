@@ -32,16 +32,17 @@ app.use(
     onSuccess: (request, response, {providerName, profile}) => {
       response.send(profile)
     },
-    // Called when the user did not allowed the app to access his data.
+    // Called when the user was not authenticated either by supplying invalid
+    // credentials or actively refusing the app access to his profile data.
     onAuthDenied: (request, response, {providerName, error}) => {
-      response.send('denied')
+      response.send('User was not authenticated...')
+    },
+    // Called when the server returned an error.
+    onError: (request, response, {providerName, error}) => {
+      response.send('Something went wrong...')
     },
     // You just need to add the client ID and secret.
     providers: {
-      facebook: {
-        clientId: 'abc...',
-        clientSecret: 'abc...'
-      },
       github: {
         clientId: 'abc...',
         clientSecret: 'abc...'
@@ -50,10 +51,7 @@ app.use(
         clientId: 'abc...',
         clientSecret: 'abc...'
       },
-      yahoo: {
-        clientId: 'abc...',
-        clientSecret: 'abc...'
-      }
+      // Other providers...
     }
   })
 )
@@ -73,3 +71,13 @@ app.get('/some-route', (request, response, next) => {
 // Other routes...
 
 ```
+
+## Supported providers
+
+### OAuth 2
+
+* Facebook
+* Github
+* Google
+* Linked In
+* Yahoo
