@@ -23,29 +23,10 @@ import Provider from './Provider'
  * Abstract base class for OAuth2 authentication.
  */
 export class OAuth2 extends Provider {
-  /**
-   * Client’s ID.
-   */
   clientId = null
-
-  /**
-   * Client’s password.
-   */
   clientSecret = null
-
-  /**
-   * Authentication request URL.
-   */
   authRequestUrl = null
-
-  /**
-   * Access required.
-   */
   scope = null
-
-  /**
-   * Token request URL.
-   */
   tokenRequestUrl = null
 
   constructor(options) {
