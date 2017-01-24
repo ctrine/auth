@@ -36,7 +36,7 @@ export class OAuth2 extends Provider {
   /**
    * Authentication request URL.
    */
-  authUrl = null
+  authRequestUrl = null
 
   /**
    * Access required.
@@ -51,11 +51,11 @@ export class OAuth2 extends Provider {
   constructor(options) {
     super(options)
 
-    let {authUrl, clientId, clientSecret, scope, tokenRequestUrl} = options
+    let {authRequestUrl, clientId, clientSecret, scope, tokenRequestUrl} = options
 
     this.clientId = clientId
     this.clientSecret = clientSecret
-    this.authUrl = authUrl
+    this.authRequestUrl = authRequestUrl
     this.tokenRequestUrl = tokenRequestUrl
 
     if (Array.isArray(scope))
@@ -65,14 +65,14 @@ export class OAuth2 extends Provider {
   }
 
   authenticate(request, response, next) {
-    if (!this.authUrl)
+    if (!this.authRequestUrl)
       throw new Error('Auth URL not defined.')
 
     let parameters = QueryString.stringify(
       this.getAuthParameters(request, response, next)
     )
 
-    response.redirect(`${this.authUrl}?${parameters}`)
+    response.redirect(`${this.authRequestUrl}?${parameters}`)
   }
 
   getAuthParameters(request, response, next) {

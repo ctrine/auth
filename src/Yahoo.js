@@ -19,7 +19,7 @@ import OAuth2 from './OAuth2'
  * access to the public and private data for Profiles in the Social Directory.
  */
 export const DEFAULT_OPTIONS = {
-  authUrl: 'https://api.login.yahoo.com/oauth2/request_auth',
+  authRequestUrl: 'https://api.login.yahoo.com/oauth2/request_auth',
   providerName: 'yahoo',
   scope: 'sdpp-w',
   tokenRequestUrl: 'https://api.login.yahoo.com/oauth2/get_token'

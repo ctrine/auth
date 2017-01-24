@@ -15,7 +15,7 @@ import defaultAssign from 'object-defaults'
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
-  authUrl: 'https://www.linkedin.com/oauth/v2/authorization',
+  authRequestUrl: 'https://www.linkedin.com/oauth/v2/authorization',
   providerName: 'linkedin',
   scope: 'r_basicprofile r_emailaddress',
   tokenRequestUrl: 'https://www.linkedin.com/oauth/v2/accessToken'

@@ -15,7 +15,7 @@ import defaultAssign from 'object-defaults'
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
-  authUrl: 'https://github.com/login/oauth/authorize',
+  authRequestUrl: 'https://github.com/login/oauth/authorize',
   providerName: 'github',
   scope: 'user',
   tokenRequestUrl: 'https://github.com/login/oauth/access_token'

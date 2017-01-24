@@ -15,7 +15,7 @@ import defaultAssign from 'object-defaults'
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
-  authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+  authRequestUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
   scope: 'email profile',
   providerName: 'google',
   tokenRequestUrl: 'https://www.googleapis.com/oauth2/v4/token'
