@@ -23,21 +23,21 @@ import Provider from './Provider'
  * Abstract base class for OAuth2 authentication.
  */
 export class OAuth2 extends Provider {
+  accessTokenRequestUrl = null
   authRequestUrl = null
   clientId = null
   clientSecret = null
   scope = null
-  accessTokenRequestUrl = null
 
   constructor(options) {
     super(options)
 
-    let {authRequestUrl, clientId, clientSecret, scope, accessTokenRequestUrl} = options
+    let {accessTokenRequestUrl, authRequestUrl, clientId, clientSecret, scope} = options
 
+    this.accessTokenRequestUrl = accessTokenRequestUrl
     this.authRequestUrl = authRequestUrl
     this.clientId = clientId
     this.clientSecret = clientSecret
-    this.accessTokenRequestUrl = accessTokenRequestUrl
 
     if (Array.isArray(scope))
       this.scope = scope.join(' ')
@@ -65,11 +65,11 @@ export class OAuth2 extends Provider {
     }
   }
 
-  getTokenRequestHeaders(request, response, next) {
+  getAccessTokenRequestHeaders(request, response, next) {
     // Most providers don’t require custom headers.
   }
 
-  getTokenRequestParameters(request, response, next) {
+  getAccessTokenRequestParameters(request, response, next) {
     return {
       client_id: this.clientId,
       client_secret: this.clientSecret,
@@ -86,21 +86,14 @@ export class OAuth2 extends Provider {
   processCallback(request, response, next) {
     let {error, error_description} = request.query
 
-    if (!error)
-      return this.requestToken(request, response, next)
-
-    if (error == 'access_denied') {
-      return Promise.reject(new AuthDenied(error_description))
+    if (error) {
+      if (error == 'access_denied')
+        return Promise.reject(new AuthDenied(error_description))
+      return Promise.reject(new Error(error_description))
     }
 
-    return Promise.reject(new Error(error_description))
-  }
-
-  /**
-   * Exchange the code for the tokens.
-   */
-  requestToken(request, response, next) {
-    let headers = this.getTokenRequestHeaders()
+    // Request the access token.
+    let headers = this.getAccessTokenRequestHeaders()
     let axiosInstance = headers
       ? Axios.create({headers})
       : Axios

@@ -30,7 +30,7 @@ export class Yahoo extends OAuth2 {
     super(defaultAssign(options, DEFAULT_OPTIONS))
   }
 
-  getTokenRequestHeaders(request, response, next) {
+  getAccessTokenRequestHeaders(request, response, next) {
     let base64Credentials = new Buffer(`${this.clientId}:${this.clientSecret}`)
       .toString('base64')
     return {Authorization: `Basic ${base64Credentials}`}

@@ -26,7 +26,7 @@ export class Github extends OAuth2 {
     super(defaultAssign(options, DEFAULT_OPTIONS))
   }
 
-  getTokenRequestHeaders(request, response, next) {
+  getAccessTokenRequestHeaders(request, response, next) {
     return {Accept: `application/json`}
   }
 
