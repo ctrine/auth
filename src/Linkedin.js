@@ -15,10 +15,10 @@ import defaultAssign from 'object-defaults'
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
+  accessTokenRequestUrl: 'https://www.linkedin.com/oauth/v2/accessToken',
   authRequestUrl: 'https://www.linkedin.com/oauth/v2/authorization',
   providerName: 'linkedin',
-  scope: 'r_basicprofile r_emailaddress',
-  accessTokenRequestUrl: 'https://www.linkedin.com/oauth/v2/accessToken'
+  scope: 'r_basicprofile r_emailaddress'
 }
 
 export class Linkedin extends OAuth2 {

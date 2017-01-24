@@ -19,10 +19,10 @@ import OAuth2 from './OAuth2'
  * access to the public and private data for Profiles in the Social Directory.
  */
 export const DEFAULT_OPTIONS = {
+  accessTokenRequestUrl: 'https://api.login.yahoo.com/oauth2/get_token',
   authRequestUrl: 'https://api.login.yahoo.com/oauth2/request_auth',
   providerName: 'yahoo',
-  scope: 'sdpp-w',
-  accessTokenRequestUrl: 'https://api.login.yahoo.com/oauth2/get_token'
+  scope: 'sdpp-w'
 }
 
 export class Yahoo extends OAuth2 {
@@ -31,9 +31,9 @@ export class Yahoo extends OAuth2 {
   }
 
   getAccessTokenRequestHeaders(request, response, next) {
-    let base64Credentials = new Buffer(`${this.clientId}:${this.clientSecret}`)
+    const BASE64_CREDENTIALS = Buffer.from(`${this.clientId}:${this.clientSecret}`)
       .toString('base64')
-    return {Authorization: `Basic ${base64Credentials}`}
+    return {Authorization:`Basic ${BASE64_CREDENTIALS}`}
   }
 
   getTokenRequestParameters(request, response, next) {
