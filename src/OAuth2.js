@@ -49,20 +49,14 @@ export class OAuth2 extends Provider {
     if (!this.authRequestUrl)
       throw new Error('Auth URL not defined.')
 
-    let parameters = QueryString.stringify(
-      this.getAuthParameters(request, response, next)
-    )
-
-    response.redirect(`${this.authRequestUrl}?${parameters}`)
-  }
-
-  getAuthParameters(request, response, next) {
-    return {
+    let parameters = QueryString.stringify({
       client_id: this.clientId,
       redirect_uri: this.callbackUrl,
       response_type: 'code',
       scope: this.scope
-    }
+    })
+
+    response.redirect(`${this.authRequestUrl}?${parameters}`)
   }
 
   getAccessTokenRequestHeaders(request, response, next) {
