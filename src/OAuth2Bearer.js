@@ -17,9 +17,7 @@ import Bearer from './Bearer'
 export class OAuth2Bearer extends Bearer {
   constructor(tokens, defaultHeaders={}) {
     const DEFAULT_BEARER_HEADER = {
-      headers: {
-        Authorization: `Bearer ${tokens.access_token}`
-      }
+      Authorization: `Bearer ${tokens.access_token}`
     }
     super(defaultAssign(defaultHeaders, DEFAULT_BEARER_HEADER))
   }
