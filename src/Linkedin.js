@@ -29,7 +29,12 @@ export class Linkedin extends OAuth2 {
   loadUserData(request, response, next) {
     let bearer = request.session.bearers[this.providerName]
 
-    return bearer.get('https://api.linkedin.com/v1/people/~:(id,email-address,picture-url,first-name,last-name)?format=json')
+    return bearer.get({
+        url: 'https://api.linkedin.com/v1/people/~:(id,email-address,picture-url,first-name,last-name)',
+        query: {
+          format: 'json'
+        }
+      })
       .then(axiosResponse => {
         let {
           firstName,

@@ -49,7 +49,9 @@ export class Yahoo extends OAuth2 {
     let bearer = request.session.bearers[this.providerName]
     let {xoauth_yahoo_guid} = request.session.tokens[this.providerName]
 
-    return bearer.get(`https://social.yahooapis.com/v1/user/${xoauth_yahoo_guid}/profile`)
+    return bearer.get({
+        url: `https://social.yahooapis.com/v1/user/${xoauth_yahoo_guid}/profile`
+      })
       .then(axiosResponse => {
         let {
           profile: {

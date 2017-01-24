@@ -33,7 +33,9 @@ export class Github extends OAuth2 {
   loadUserData(request, response, next) {
     let bearer = request.session.bearers[this.providerName]
 
-    return bearer.get('https://api.github.com/user')
+    return bearer.get({
+        url: 'https://api.github.com/user'
+      })
       .then(axiosResponse => {
         let {
           name,

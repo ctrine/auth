@@ -29,7 +29,9 @@ export class Google extends OAuth2 {
   loadUserData(request, response, next) {
     let bearer = request.session.bearers[this.providerName]
 
-    return bearer.get('https://www.googleapis.com/plus/v1/people/me')
+    return bearer.get({
+        url: 'https://www.googleapis.com/plus/v1/people/me'
+      })
       .then(axiosResponse => {
         let {
           displayName:name,

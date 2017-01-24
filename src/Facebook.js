@@ -29,7 +29,12 @@ export class Facebook extends OAuth2 {
   loadUserData(request, response, next) {
     let bearer = request.session.bearers[this.providerName]
 
-    return bearer.get('https://graph.facebook.com/v2.8/me?fields=email,name,picture')
+    return bearer.get({
+        url: 'https://graph.facebook.com/v2.8/me',
+        query: {
+          fields: 'email, name, picture'
+        }
+      })
       .then(axiosResponse => {
         let {
           name,
