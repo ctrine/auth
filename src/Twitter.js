@@ -10,10 +10,45 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+import defaultAssign from 'object-defaults'
+
 import OAuth1a from './OAuth1a'
 
+export const DEFAULT_OPTIONS = {
+  accessTokenRequestUrl: 'https://api.twitter.com/oauth/access_token',
+  authRequestUrl: 'https://api.twitter.com/oauth/authenticate',
+  providerName: 'twitter',
+  tokenRequestUrl: 'https://api.twitter.com/oauth/request_token'
+}
+
 export class Twitter extends OAuth1a {
-  // TODO
+  constructor(options) {
+    super(defaultAssign(options, DEFAULT_OPTIONS))
+  }
+
+  loadUserData(request, response, next) {
+    let bearer = request.session.bearers[this.providerName]
+
+    return bearer.get({
+        url: 'https://api.twitter.com/1.1/account/verify_credentials.json',
+        query: {
+          include_email: true
+        }
+      })
+      .then(axiosResponse => {
+        let {
+          name,
+          email,
+          id_str:id,
+          profile_image_url:image
+        } = axiosResponse.data
+
+        return {
+          id, image, name,
+          emails: [email]
+        }
+      })
+  }
 }
 
 export default Twitter
