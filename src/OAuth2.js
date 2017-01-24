@@ -15,7 +15,6 @@ import Promise from 'bluebird'
 import QueryString from 'querystring'
 
 import AuthDenied from './AuthDenied'
-import OAuth from './OAuth'
 import OAuth2Bearer from './OAuth2Bearer'
 import Provider from './Provider'
 
@@ -32,7 +31,13 @@ export class OAuth2 extends Provider {
   constructor(options) {
     super(options)
 
-    let {accessTokenRequestUrl, authRequestUrl, clientId, clientSecret, scope} = options
+    let {
+      accessTokenRequestUrl,
+      authRequestUrl,
+      clientId,
+      clientSecret,
+      scope
+    } = options
 
     this.accessTokenRequestUrl = accessTokenRequestUrl
     this.authRequestUrl = authRequestUrl
@@ -93,7 +98,7 @@ export class OAuth2 extends Provider {
       : Axios
 
     let parameters = QueryString.stringify(
-      this.getTokenRequestParameters(request, response, next)
+      this.getAccessTokenRequestParameters(request, response, next)
     )
 
     return axiosInstance.post(this.accessTokenRequestUrl, parameters)
