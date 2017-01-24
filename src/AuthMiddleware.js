@@ -111,6 +111,9 @@ class AuthMiddleware {
 
     // Initiates authentication.
     provider.authenticate(request, response, next)
+      .catch(error => {
+        this._options.onError(request, response, errorData)
+      })
   }
 
   @autobind
