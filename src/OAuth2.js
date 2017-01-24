@@ -62,6 +62,7 @@ export class OAuth2 extends Provider {
     })
 
     response.redirect(`${this.authRequestUrl}?${parameters}`)
+    return Promise.resolve()
   }
 
   getAccessTokenRequestHeaders(request, response, next) {
