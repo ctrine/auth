@@ -74,6 +74,10 @@ app.get('/some-route', (request, response, next) => {
 
 ## Supported providers
 
+### OAuth 1a
+
+* Twitter
+
 ### OAuth 2
 
 * Facebook
