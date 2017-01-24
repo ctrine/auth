@@ -10,7 +10,136 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-export class OAuth1a {
+import Axios from 'axios'
+import Crypto from 'crypto'
+import QueryString from 'querystring'
+import Uuid from 'uuid'
+
+import OAuth1aBearer from './OAuth1aBearer'
+import Provider from './Provider'
+
+export class OAuth1a extends Provider {
+  accessTokenRequestUrl = null
+  authRequestUrl = null
+  consumerKey = null
+  consumerSecret = null
+  hashFunction = null
+  signatureMethod = null
+  tokenRequestUrl = null
+
+  constructor(options) {
+    super(options)
+
+    let {
+      accessTokenRequestUrl,
+      authRequestUrl,
+      consumerKey,
+      consumerSecret,
+      signatureMethod = 'HMAC-SHA1',
+      tokenRequestUrl
+    } = options
+
+    this.accessTokenRequestUrl = accessTokenRequestUrl
+    this.authRequestUrl = authRequestUrl
+    this.consumerKey = consumerKey
+    this.consumerSecret = consumerSecret
+    this.signatureMethod = signatureMethod
+    this.tokenRequestUrl = tokenRequestUrl
+  }
+
+  authenticate(request, response, next) {
+    let parameters = {
+      oauth_callback: this.callbackUrl,
+      oauth_consumer_key: this.consumerKey,
+      oauth_nonce: Uuid.v4(),
+      oauth_signature_method: this.signatureMethod,
+      oauth_timestamp: Math.floor(Date.now() / 1000),
+      oauth_version: '1.0'
+    }
+
+    parameters.oauth_signature = this._generateSignature({
+      data: parameters,
+      url: this.tokenRequestUrl
+    })
+
+    return Axios.create({
+        headers: {
+          Authorization: 'OAuth ' + QueryString.stringify(parameters, ',')
+        }
+      })
+      .post(this.tokenRequestUrl)
+      .then(axiosResponse => {
+        let {oauth_token, oauth_token_secret} = QueryString.parse(axiosResponse.data)
+
+        this._step1Token = oauth_token
+        this._step1TokenSecret = oauth_token_secret
+
+        response.redirect(`${this.authRequestUrl}?oauth_token=${oauth_token}`)
+      })
+  }
+
+  processCallback(request, response, next) {
+    let {oauth_token, oauth_verifier} = request.query
+
+    if (oauth_token != this._step1Token)
+      throw new Error('Invalid token.')
+
+    let parameters = {
+      oauth_callback: this.callbackUrl,
+      oauth_consumer_key: this.consumerKey,
+      oauth_nonce: Uuid.v4(),
+      oauth_signature_method: this.signatureMethod,
+      oauth_timestamp: Math.floor(Date.now() / 1000),
+      oauth_token,
+      oauth_version: '1.0'
+    }
+
+    parameters.oauth_signature = this._generateSignature({
+      data: parameters,
+      tokenSecret: this._step1TokenSecret,
+      url: this.accessTokenRequestUrl
+    })
+
+    return Axios.create({
+        headers: {
+          Authorization: 'OAuth ' + QueryString.stringify(parameters, ',')
+        }
+      })
+      .post(this.accessTokenRequestUrl, `oauth_verifier=${oauth_verifier}`)
+      .then(axiosResponse => {
+        let tokens = QueryString.parse(axiosResponse.data)
+        let bearer = new OAuth1aBearer({
+          consumerKey: this.consumerKey,
+          consumerSecret: this.consumerSecret,
+          signatureMethod: this.signatureMethod,
+          tokens
+        })
+        return {bearer, tokens}
+      })
+  }
+
+  _generateSignature({data, method='POST', tokenSecret='', url}) {
+    // Sort the parameters.
+    data = Object.entries(data)
+      .map(([key, value]) => `${key}=${QueryString.escape(value)}`)
+      .sort()
+      .reduce((result, pair) => `${result}&${pair}`)
+
+    // Prepare the base string.
+    const ESCAPED_PARAMETERS = QueryString.escape(data)
+    const ESCAPED_URL = QueryString.escape(url)
+    const BASE_STRING = `${method}&${ESCAPED_URL}&${ESCAPED_PARAMETERS}`
+
+    // TODO: Add more methods.
+    switch (this.signatureMethod) {
+      case 'HMAC-SHA1':
+        return Crypto.createHmac('sha1', `${this.consumerSecret}&${tokenSecret}`)
+          .update(BASE_STRING)
+          .digest('base64')
+    }
+
+    throw new Error('Unsupported signature method.')
+  }
 }
 
 export default OAuth1a
