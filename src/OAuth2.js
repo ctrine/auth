@@ -27,17 +27,17 @@ export class OAuth2 extends Provider {
   clientId = null
   clientSecret = null
   scope = null
-  tokenRequestUrl = null
+  accessTokenRequestUrl = null
 
   constructor(options) {
     super(options)
 
-    let {authRequestUrl, clientId, clientSecret, scope, tokenRequestUrl} = options
+    let {authRequestUrl, clientId, clientSecret, scope, accessTokenRequestUrl} = options
 
     this.authRequestUrl = authRequestUrl
     this.clientId = clientId
     this.clientSecret = clientSecret
-    this.tokenRequestUrl = tokenRequestUrl
+    this.accessTokenRequestUrl = accessTokenRequestUrl
 
     if (Array.isArray(scope))
       this.scope = scope.join(' ')
@@ -109,7 +109,7 @@ export class OAuth2 extends Provider {
       this.getTokenRequestParameters(request, response, next)
     )
 
-    return axiosInstance.post(this.tokenRequestUrl, parameters)
+    return axiosInstance.post(this.accessTokenRequestUrl, parameters)
       .then(axiosResponse => {
         let tokens = axiosResponse.data
         let bearer = new OAuth2Bearer(tokens)

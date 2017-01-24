@@ -18,7 +18,7 @@ export const DEFAULT_OPTIONS = {
   authRequestUrl: 'https://github.com/login/oauth/authorize',
   providerName: 'github',
   scope: 'user',
-  tokenRequestUrl: 'https://github.com/login/oauth/access_token'
+  accessTokenRequestUrl: 'https://github.com/login/oauth/access_token'
 }
 
 export class Github extends OAuth2 {

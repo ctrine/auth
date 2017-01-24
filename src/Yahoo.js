@@ -22,7 +22,7 @@ export const DEFAULT_OPTIONS = {
   authRequestUrl: 'https://api.login.yahoo.com/oauth2/request_auth',
   providerName: 'yahoo',
   scope: 'sdpp-w',
-  tokenRequestUrl: 'https://api.login.yahoo.com/oauth2/get_token'
+  accessTokenRequestUrl: 'https://api.login.yahoo.com/oauth2/get_token'
 }
 
 export class Yahoo extends OAuth2 {

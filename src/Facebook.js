@@ -18,7 +18,7 @@ export const DEFAULT_OPTIONS = {
   authRequestUrl: 'https://www.facebook.com/dialog/oauth',
   scope: 'public_profile email',
   providerName: 'facebook',
-  tokenRequestUrl: 'https://graph.facebook.com/v2.8/oauth/access_token'
+  accessTokenRequestUrl: 'https://graph.facebook.com/v2.8/oauth/access_token'
 }
 
 export class Facebook extends OAuth2 {

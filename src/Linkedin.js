@@ -18,7 +18,7 @@ export const DEFAULT_OPTIONS = {
   authRequestUrl: 'https://www.linkedin.com/oauth/v2/authorization',
   providerName: 'linkedin',
   scope: 'r_basicprofile r_emailaddress',
-  tokenRequestUrl: 'https://www.linkedin.com/oauth/v2/accessToken'
+  accessTokenRequestUrl: 'https://www.linkedin.com/oauth/v2/accessToken'
 }
 
 export class Linkedin extends OAuth2 {
