@@ -21,7 +21,7 @@ export class OAuth2Bearer extends Bearer {
         Authorization: `Bearer ${tokens.access_token}`
       }
     }
-    super(tokens, defaultAssign(defaultHeaders, DEFAULT_BEARER_HEADER))
+    super(defaultAssign(defaultHeaders, DEFAULT_BEARER_HEADER))
   }
 }
 

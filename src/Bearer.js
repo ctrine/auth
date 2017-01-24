@@ -12,38 +12,50 @@
 
 import Axios from 'axios'
 import defaultAssign from 'object-defaults'
+import QueryString from 'querystring'
 
 export class Bearer {
   _defaultHeaders = null
-  _tokens = null
 
-  constructor(tokens, defaultHeaders={}) {
+  constructor(defaultHeaders={}) {
     this._defaultHeaders = defaultHeaders
-    this._tokens = tokens
   }
 
-  delete(url, headers={}) {
-    return Axios.delete(url, this._getHeaders(headers))
+  delete({url, query, headers={}}) {
+    return this._getAxios(headers)
+      .delete(this._getRequest(url, query))
   }
 
-  get(url, headers={}) {
-    return Axios.get(url, this._getHeaders(headers))
+  get({url, query, headers={}}) {
+    return this._getAxios(headers)
+      .get(this._getRequest(url, query))
   }
 
-  patch(url, headers={}) {
-    return Axios.patch(url, this._getHeaders(headers))
+  patch({url, query, data, headers={}}) {
+    return this._getAxios(headers)
+      .patch(this._getRequest(url, query), data)
   }
 
-  post(url, headers={}) {
-    return Axios.post(url, this._getHeaders(headers))
+  post({url, query, data, headers={}}) {
+    return this._getAxios(headers)
+      .post(this._getRequest(url, query), data)
   }
 
-  put(url, headers={}) {
-    return Axios.put(url, this._getHeaders(headers))
+  put({url, query, data, headers={}}) {
+    return this._getAxios(headers)
+      .put(this._getRequest(url, query), data)
   }
 
-  _getHeaders(headers={}) {
-    return defaultAssign(headers, this._defaultHeaders)
+  _getAxios(headers={}) {
+    return Axios.create({
+      headers: defaultAssign(headers, this._defaultHeaders)
+    })
+  }
+
+  _getRequest(url, query) {
+    return query
+      ? `${url}?${QueryString.stringify(query)}`
+      : url
   }
 }
 
