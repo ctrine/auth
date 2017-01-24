@@ -23,9 +23,9 @@ import Provider from './Provider'
  * Abstract base class for OAuth2 authentication.
  */
 export class OAuth2 extends Provider {
+  authRequestUrl = null
   clientId = null
   clientSecret = null
-  authRequestUrl = null
   scope = null
   tokenRequestUrl = null
 
@@ -34,9 +34,9 @@ export class OAuth2 extends Provider {
 
     let {authRequestUrl, clientId, clientSecret, scope, tokenRequestUrl} = options
 
+    this.authRequestUrl = authRequestUrl
     this.clientId = clientId
     this.clientSecret = clientSecret
-    this.authRequestUrl = authRequestUrl
     this.tokenRequestUrl = tokenRequestUrl
 
     if (Array.isArray(scope))
@@ -73,9 +73,9 @@ export class OAuth2 extends Provider {
     return {
       client_id: this.clientId,
       client_secret: this.clientSecret,
-      redirect_uri: this.callbackUrl,
+      code: request.query.code,
       grant_type: 'authorization_code',
-      code: request.query.code
+      redirect_uri: this.callbackUrl
     }
   }
 
