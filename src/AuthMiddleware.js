@@ -112,7 +112,12 @@ class AuthMiddleware {
     // Initiates authentication.
     provider.authenticate(request, response, next)
       .catch(error => {
-        this._options.onError(request, response, errorData)
+        this._options.onError({
+          error,
+          providerName,
+          request,
+          response
+        })
       })
   }
 
@@ -133,12 +138,17 @@ class AuthMiddleware {
         request.session.currentAuthProvider = null
         request.session.nextAuthStep = null
 
-        let errorData = {providerName, error}
+        const ERROR_DATA = {
+          error,
+          providerName,
+          request,
+          response
+        }
 
         if (error instanceof AuthDenied)
-          this._options.onAuthDenied(request, response, errorData)
+          this._options.onAuthDenied(ERROR_DATA)
         else
-          this._options.onError(request, response, errorData)
+          this._options.onError(ERROR_DATA)
       })
   }
 
@@ -154,21 +164,27 @@ class AuthMiddleware {
 
     provider.loadUserData(request, response, next)
       .then(profile => {
-        let successData = {providerName, profile}
-
         request.session.currentAuthProvider = null
         request.session.nextAuthStep = null
         request.session.profiles[providerName] = profile
 
-        this._options.onSuccess(request, response, successData)
+        this._options.onSuccess({
+          profile,
+          providerName,
+          request,
+          response
+        })
       })
       .catch(error => {
-        let errorData = {providerName, error}
-
         request.session.currentAuthProvider = null
         request.session.nextAuthStep = null
 
-        this._options.onError(request, response, errorData)
+        this._options.onError({
+          error,
+          providerName,
+          request,
+          response
+        })
       })
   }
 

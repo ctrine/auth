@@ -17,18 +17,22 @@ export type Profile = {
 }
 
 export type SuccessData = {
+  profile:Profile,
   providerName:string,
+  request:any,
+  response:any
   tokens:Object,
-  profile:Profile
 }
 
 export type ErrorData = {
+  error:Object,
   providerName:string,
-  error:Object
+  request:any,
+  response:any
 }
 
-export type SuccessCallback = (request:any, response:any, data:SuccessData) => void
-export type ErrorCallback = (request:any, response:any, data:ErrorData) => void
+export type SuccessCallback = (data:SuccessData) => void
+export type ErrorCallback = (data:ErrorData) => void
 
 // TODO
 export type OAuth1aOptions = {

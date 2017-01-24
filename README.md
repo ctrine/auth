@@ -29,16 +29,16 @@ app.use(
     // Route to process the callback.
     callbackRoute: '/auth/callback',
     // Called when the authentication completes.
-    onSuccess: (request, response, {providerName, profile}) => {
+    onSuccess: ({request, response, providerName, profile}) => {
       response.send(profile)
     },
     // Called when the user was not authenticated either by supplying invalid
     // credentials or actively refusing the app access to his profile data.
-    onAuthDenied: (request, response, {providerName, error}) => {
+    onAuthDenied: ({request, response, providerName, error}) => {
       response.send('User was not authenticated...')
     },
     // Called when the server returned an error.
-    onError: (request, response, {providerName, error}) => {
+    onError: ({request, response, providerName, error}) => {
       response.send('Something went wrong...')
     },
     // You just need to add the client ID and secret.
