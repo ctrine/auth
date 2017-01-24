@@ -17,6 +17,7 @@ import Uuid from 'uuid'
 import defaultAssign from 'object-defaults'
 
 import Bearer from './Bearer'
+import {generateSignature} from './OAuth1a'
 
 export class OAuth1aBearer extends Bearer {
   constructor({consumerKey, consumerSecret, signatureMethod, tokens}, defaultHeaders={}) {
@@ -44,16 +45,18 @@ export class OAuth1aBearer extends Bearer {
       ...query
     }
 
-    parameters.oauth_signature = this._generateSignature({
+    parameters.oauth_signature = generateSignature({
+      consumerSecret: this.consumerSecret,
       data: parameters,
       method: 'GET',
+      tokenSecret: this.tokenSecret,
       url
     })
 
     return super.get({
-        query: parameters,
-        url
-      })
+      query: parameters,
+      url
+    })
   }
 
   // TODO
@@ -69,29 +72,6 @@ export class OAuth1aBearer extends Bearer {
   // TODO
   put({url, query, data, headers={}}) {
     throw new Error('Not implemented.')
-  }
-
-  _generateSignature({data, method, url}) {
-    // Sort the parameters.
-    data = Object.entries(data)
-      .map(([key, value]) => `${key}=${QueryString.escape(value)}`)
-      .sort()
-      .reduce((result, pair) => `${result}&${pair}`)
-
-    // Prepare the base string.
-    const ESCAPED_PARAMETERS = QueryString.escape(data)
-    const ESCAPED_URL = QueryString.escape(url)
-    const BASE_STRING = `${method}&${ESCAPED_URL}&${ESCAPED_PARAMETERS}`
-
-    // TODO: Add more methods.
-    switch (this.signatureMethod) {
-      case 'HMAC-SHA1':
-        return Crypto.createHmac('sha1', `${this.consumerSecret}&${this.tokenSecret}`)
-          .update(BASE_STRING)
-          .digest('base64')
-    }
-
-    throw new Error('Unsupported signature method.')
   }
 }
 

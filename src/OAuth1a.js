@@ -18,6 +18,36 @@ import Uuid from 'uuid'
 import OAuth1aBearer from './OAuth1aBearer'
 import Provider from './Provider'
 
+export function generateSignature({
+  consumerSecret,
+  data,
+  method,
+  signatureMethod='HMAC-SHA1',
+  tokenSecret='',
+  url
+}) {
+  // Sort the parameters.
+  data = Object.entries(data)
+    .map(([key, value]) => `${key}=${QueryString.escape(value)}`)
+    .sort()
+    .reduce((result, pair) => `${result}&${pair}`)
+
+  // Prepare the base string.
+  const ESCAPED_PARAMETERS = QueryString.escape(data)
+  const ESCAPED_URL = QueryString.escape(url)
+  const BASE_STRING = `${method}&${ESCAPED_URL}&${ESCAPED_PARAMETERS}`
+
+  // TODO: Add more methods.
+  switch (signatureMethod) {
+    case 'HMAC-SHA1':
+      return Crypto.createHmac('sha1', `${consumerSecret}&${tokenSecret}`)
+        .update(BASE_STRING)
+        .digest('base64')
+  }
+
+  throw new Error('Unsupported signature method.')
+}
+
 export class OAuth1a extends Provider {
   accessTokenRequestUrl = null
   authRequestUrl = null
@@ -57,8 +87,10 @@ export class OAuth1a extends Provider {
       oauth_version: '1.0'
     }
 
-    parameters.oauth_signature = this._generateSignature({
+    parameters.oauth_signature = generateSignature({
+      consumerSecret: this.consumerSecret,
       data: parameters,
+      method: 'POST',
       url: this.tokenRequestUrl
     })
 
@@ -94,8 +126,10 @@ export class OAuth1a extends Provider {
       oauth_version: '1.0'
     }
 
-    parameters.oauth_signature = this._generateSignature({
+    parameters.oauth_signature = generateSignature({
+      consumerSecret: this.consumerSecret,
       data: parameters,
+      method: 'POST',
       tokenSecret: this._step1TokenSecret,
       url: this.accessTokenRequestUrl
     })
@@ -116,29 +150,6 @@ export class OAuth1a extends Provider {
         })
         return {bearer, tokens}
       })
-  }
-
-  _generateSignature({data, method='POST', tokenSecret='', url}) {
-    // Sort the parameters.
-    data = Object.entries(data)
-      .map(([key, value]) => `${key}=${QueryString.escape(value)}`)
-      .sort()
-      .reduce((result, pair) => `${result}&${pair}`)
-
-    // Prepare the base string.
-    const ESCAPED_PARAMETERS = QueryString.escape(data)
-    const ESCAPED_URL = QueryString.escape(url)
-    const BASE_STRING = `${method}&${ESCAPED_URL}&${ESCAPED_PARAMETERS}`
-
-    // TODO: Add more methods.
-    switch (this.signatureMethod) {
-      case 'HMAC-SHA1':
-        return Crypto.createHmac('sha1', `${this.consumerSecret}&${tokenSecret}`)
-          .update(BASE_STRING)
-          .digest('base64')
-    }
-
-    throw new Error('Unsupported signature method.')
   }
 }
 
