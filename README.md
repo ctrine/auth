@@ -24,7 +24,7 @@ app.use(
   auth({
     // The domain used for callbacks.
     domain: 'http://www.mydomain.com',
-    // The :provider is required to identify the authentication intended.
+    // The “:provider” parameter is required to identify the provider.
     authRoute: '/auth/:provider',
     // Route to process the callback.
     callbackRoute: '/auth/callback',
