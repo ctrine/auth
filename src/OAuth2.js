@@ -79,10 +79,6 @@ export class OAuth2 extends Provider {
     }
   }
 
-  loadUserData(request, response, next) {
-    throw new Error('Not implemented.')
-  }
-
   processCallback(request, response, next) {
     let {error, error_description} = request.query
 

@@ -26,7 +26,6 @@ export function generateSignature({
   tokenSecret='',
   url
 }) {
-  // Sort the parameters.
   data = Object.entries(data)
     .map(([key, value]) => `${key}=${QueryString.escape(value)}`)
     .sort()
@@ -48,6 +47,9 @@ export function generateSignature({
   throw new Error('Unsupported signature method.')
 }
 
+/**
+ * Abstract base class for OAuth 1a authentication.
+ */
 export class OAuth1a extends Provider {
   accessTokenRequestUrl = null
   authRequestUrl = null
@@ -101,7 +103,10 @@ export class OAuth1a extends Provider {
       })
       .post(this.tokenRequestUrl)
       .then(axiosResponse => {
-        let {oauth_token, oauth_token_secret} = QueryString.parse(axiosResponse.data)
+        let {
+          oauth_token,
+          oauth_token_secret
+        } = QueryString.parse(axiosResponse.data)
 
         this._step1Token = oauth_token
         this._step1TokenSecret = oauth_token_secret
@@ -111,7 +116,10 @@ export class OAuth1a extends Provider {
   }
 
   processCallback(request, response, next) {
-    let {oauth_token, oauth_verifier} = request.query
+    let {
+      oauth_token,
+      oauth_verifier
+    } = request.query
 
     if (oauth_token != this._step1Token)
       throw new Error('Invalid token.')
