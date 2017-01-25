@@ -48,10 +48,7 @@ class AuthMiddleware {
   _providers = {}
 
   constructor(options:Options) {
-    this._options = {
-      ...DEFAULT_OPTIONS,
-      ...options
-    }
+    defaultAssign(options, DEFAULT_OPTIONS)
 
     let {authRoute, callbackRoute, domain, providers} = this._options
     let callbackUrl = `${domain}${callbackRoute}`
