@@ -10,6 +10,7 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+import Dropbox from './Dropbox'
 import Facebook from './Facebook'
 import Github from './Github'
 import Google from './Google'
@@ -19,6 +20,7 @@ import Twitter from './Twitter'
 import Yahoo from './Yahoo'
 
 export const AVAILABLE_PROVIDERS = {
+  dropbox: Dropbox,
   facebook: Facebook,
   github: Github,
   google: Google,
@@ -28,20 +30,23 @@ export const AVAILABLE_PROVIDERS = {
   yahoo: Yahoo
 }
 
-function defaultOnSuccess({response, providerName, profile}) {
-  response.json({providerName, profile})
-}
-
-function defaultOnAuthDenied({response, providerName, error}) {
-  response.status(401).json({
-    providerName,
-    error: error.stack || error
+function defaultOnSuccess(request, response, next, provider) {
+  response.json({
+    profile: request.session.profiles[provider],
+    provider
   })
 }
 
-function defaultOnError({response, providerName, error}) {
+function defaultOnAuthDenied(error, request, response, next, provider) {
+  response.status(401).json({
+    error: error.stack || error,
+    provider
+  })
+}
+
+function defaultOnError(error, request, response, next, provider) {
   response.status(500).json({
-    providerName,
+    provider,
     error: error.stack || error
   })
 }

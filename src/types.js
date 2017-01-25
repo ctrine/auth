@@ -16,25 +16,9 @@ export type Profile = {
   emails:Array<string>
 }
 
-export type SuccessData = {
-  profile:Profile,
-  providerName:string,
-  request:any,
-  response:any,
-  tokens:Object
-}
+export type SuccessCallback = (request:any, response:any, next:Function, provider:string) => void
+export type ErrorCallback = (error:any, request:any, response:any, next:Function, provider:string) => void
 
-export type ErrorData = {
-  error:Object,
-  providerName:string,
-  request:any,
-  response:any
-}
-
-export type SuccessCallback = (data:SuccessData) => void
-export type ErrorCallback = (data:ErrorData) => void
-
-// TODO
 export type OAuth1aOptions = {
   consumerKey:string,
   consumerSecret:string
