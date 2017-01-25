@@ -20,8 +20,8 @@ export type SuccessData = {
   profile:Profile,
   providerName:string,
   request:any,
-  response:any
-  tokens:Object,
+  response:any,
+  tokens:Object
 }
 
 export type ErrorData = {
