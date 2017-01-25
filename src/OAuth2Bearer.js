@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-import defaultAssign from 'object-defaults'
+import defaultAssign from 'defaults-deep'
 
 import Bearer from './Bearer'
 

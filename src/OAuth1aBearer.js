@@ -12,9 +12,9 @@
 
 import Axios from 'axios'
 import Crypto from 'crypto'
+import defaultAssign from 'defaults-deep'
 import QueryString from 'querystring'
 import Uuid from 'uuid'
-import defaultAssign from 'object-defaults'
 
 import Bearer from './Bearer'
 import {generateSignature} from './OAuth1a'
