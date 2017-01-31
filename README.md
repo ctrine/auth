@@ -29,7 +29,8 @@ app.use(
     // Route to process the callback.
     callbackRoute: '/auth/callback',
     // Called when the authentication completes.
-    onSuccess: (request, response, next) => {
+    onSuccess: (request, response, next, provider) => {
+      let profile = request.session.profiles[provider]
       response.send(profile)
     },
     // Called when the user was not authenticated either by supplying invalid
