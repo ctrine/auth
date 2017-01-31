@@ -24,9 +24,11 @@ app.use(
   auth({
     // The domain used for callbacks.
     domain: 'http://www.mydomain.com',
-    // The “:provider” parameter is required to identify the provider.
+    // The “:provider” parameter is required to identify the provider; the following
+    // value is the default one and you can ommit the setting.
     authRoute: '/auth/:provider',
-    // Route to process the callback.
+    // Route to process the callback; the following value is the default one and
+    // you can ommit the setting.
     callbackRoute: '/auth/callback',
     // Called when the authentication completes.
     onSuccess: (request, response, next, provider) => {
