@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-import Dropbox from './Dropbox'
+// import Dropbox from './Dropbox'
 import Facebook from './Facebook'
 import Github from './Github'
 import Google from './Google'
@@ -20,7 +20,7 @@ import Twitter from './Twitter'
 import Yahoo from './Yahoo'
 
 export const AVAILABLE_PROVIDERS = {
-  dropbox: Dropbox,
+  // dropbox: Dropbox,
   facebook: Facebook,
   github: Github,
   google: Google,
