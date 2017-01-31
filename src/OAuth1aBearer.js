@@ -48,7 +48,7 @@ export class OAuth1aBearer extends Bearer {
     parameters.oauth_signature = generateSignature({
       consumerSecret: this.consumerSecret,
       data: parameters,
-      method: 'GET',
+      httpMethod: 'GET',
       tokenSecret: this.tokenSecret,
       url
     })

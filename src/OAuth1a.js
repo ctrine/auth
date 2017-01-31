@@ -18,14 +18,27 @@ import Uuid from 'uuid'
 import OAuth1aBearer from './OAuth1aBearer'
 import Provider from './Provider'
 
-export function generateSignature({
-  consumerSecret,
-  data,
-  method,
-  signatureMethod='HMAC-SHA1',
-  tokenSecret='',
-  url
-}) {
+export type SignatureMethods = 'HMAC-SHA1'
+
+export type SignatureOptions = {
+  consumerSecret:string,
+  data:Object,
+  httpMethod:string,
+  signatureMethod:SignatureMethods,
+  tokenSecret:string,
+  url:string
+}
+
+export function generateSignature(options:SignatureOptions) {
+  let {
+    consumerSecret,
+    data,
+    httpMethod,
+    signatureMethod='HMAC-SHA1',
+    tokenSecret='',
+    url
+  } = options
+
   data = Object.entries(data)
     .map(([key, value]) => `${key}=${QueryString.escape(value)}`)
     .sort()
@@ -34,7 +47,7 @@ export function generateSignature({
   // Prepare the base string.
   const ESCAPED_PARAMETERS = QueryString.escape(data)
   const ESCAPED_URL = QueryString.escape(url)
-  const BASE_STRING = `${method}&${ESCAPED_URL}&${ESCAPED_PARAMETERS}`
+  const BASE_STRING = `${httpMethod}&${ESCAPED_URL}&${ESCAPED_PARAMETERS}`
 
   // TODO: Add more methods.
   switch (signatureMethod) {
@@ -92,7 +105,7 @@ export class OAuth1a extends Provider {
     parameters.oauth_signature = generateSignature({
       consumerSecret: this.consumerSecret,
       data: parameters,
-      method: 'POST',
+      httpMethod: 'POST',
       url: this.tokenRequestUrl
     })
 
@@ -137,7 +150,7 @@ export class OAuth1a extends Provider {
     parameters.oauth_signature = generateSignature({
       consumerSecret: this.consumerSecret,
       data: parameters,
-      method: 'POST',
+      httpMethod: 'POST',
       tokenSecret: this._step1TokenSecret,
       url: this.accessTokenRequestUrl
     })
