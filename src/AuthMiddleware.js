@@ -11,7 +11,8 @@
 // the License.
 
 import autobind from 'autobind-decorator'
-import defaultAssign from 'object-defaults'
+import deepAssign from 'deep-assign'
+import defaultAssign from 'defaults-deep'
 import express from 'express'
 
 import AuthDenied from './AuthDenied'
@@ -20,13 +21,6 @@ import {
   DEFAULT_OPTIONS,
   DEFAULT_SESSION_KEYS
 } from './constants'
-
-/**
- * Make sure the expected keys exists in the session.
- */
-function checkSessionKeys(request) {
-  defaultAssign(request.session, DEFAULT_SESSION_KEYS)
-}
 
 /**
  * Middleware used to authenticate.
@@ -40,7 +34,7 @@ class AuthMiddleware {
   /**
    * All settings.
    */
-  _options = {}
+  _options = DEFAULT_OPTIONS
 
   /**
    * Configured providers.
@@ -48,7 +42,7 @@ class AuthMiddleware {
   _providers = {}
 
   constructor(options:Options) {
-    defaultAssign(options, DEFAULT_OPTIONS)
+    deepAssign(this._options, options)
 
     let {authRoute, callbackRoute, domain, providers} = this._options
     let callbackUrl = `${domain}${callbackRoute}`
@@ -58,8 +52,8 @@ class AuthMiddleware {
 
     // Configure the providers with the client’s credentials and the callback
     // URL that can be used to process additional steps.
-    Object.entries(providers).forEach(([provider, config]) => {
-      this._providers[provider] = new AVAILABLE_PROVIDERS[provider]({
+    Object.entries(providers).forEach(([providerName, config]) => {
+      this._providers[providerName] = new AVAILABLE_PROVIDERS[providerName]({
         callbackUrl,
         ...config
       })
@@ -94,13 +88,13 @@ class AuthMiddleware {
 
   @autobind
   authenticate(request, response, next) {
-    checkSessionKeys(request)
+    defaultAssign(request.session, DEFAULT_SESSION_KEYS)
 
     let providerName = request.params.provider
     let provider = this._providers[providerName]
 
     if (!provider)
-      throw new Error(`Provider "${providerName}" settings not found.`)
+      throw new Error(`Provider "${providerName}" not configured.`)
 
     // Save the provider in the session which can be used later to execute the
     // additional steps required.
@@ -117,7 +111,7 @@ class AuthMiddleware {
 
   @autobind
   processCallback(request, response, next) {
-    checkSessionKeys(request)
+    defaultAssign(request.session, DEFAULT_SESSION_KEYS)
 
     let providerName = request.session.currentAuthProvider
     let provider = this._providers[providerName]
@@ -144,7 +138,7 @@ class AuthMiddleware {
    */
   @autobind
   _authenticated(request, response, next) {
-    checkSessionKeys(request)
+    defaultAssign(request.session, DEFAULT_SESSION_KEYS)
 
     let providerName = request.session.currentAuthProvider
     let provider = this._providers[providerName]
@@ -163,7 +157,9 @@ class AuthMiddleware {
       })
   }
 
-  // Used to allow the callback as a subroute of the auth route.
+  /**
+   * Used to allow the callback as a subroute of the auth route.
+   */
   @autobind
   _skipCallback(request, response, next) {
     if (request.path == this._options.callbackRoute)
