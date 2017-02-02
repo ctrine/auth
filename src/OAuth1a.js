@@ -19,7 +19,6 @@ import OAuth1aBearer from './OAuth1aBearer'
 import Provider from './Provider'
 
 export type SignatureMethods = 'HMAC-SHA1'
-
 export type SignatureOptions = {
   consumerSecret:string,
   data:Object,

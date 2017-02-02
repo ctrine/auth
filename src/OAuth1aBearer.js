@@ -12,7 +12,7 @@
 
 import Axios from 'axios'
 import Crypto from 'crypto'
-import defaultAssign from 'defaults-deep'
+import defaultAssign from 'object-defaults'
 import QueryString from 'querystring'
 import Uuid from 'uuid'
 

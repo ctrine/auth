@@ -11,7 +11,7 @@
 // the License.
 
 import Axios from 'axios'
-import defaultAssign from 'defaults-deep'
+import defaultAssign from 'object-defaults'
 import QueryString from 'querystring'
 
 export class Bearer {

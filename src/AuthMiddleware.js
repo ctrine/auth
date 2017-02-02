@@ -12,7 +12,7 @@
 
 import autobind from 'autobind-decorator'
 import deepAssign from 'deep-assign'
-import defaultAssign from 'defaults-deep'
+import defaultAssign from 'object-defaults'
 import express from 'express'
 
 import AuthDenied from './AuthDenied'
