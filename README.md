@@ -61,7 +61,7 @@ app.use(
 
 // API request.
 app.get('/some-route', (request, response, next) => {
-  let bearer = request.session.bearer['google']
+  let bearer = request.session.bearers['google']
 
   // User is not authenticated for google.
   if (!bearer)
@@ -83,6 +83,7 @@ app.get('/some-route', (request, response, next) => {
 
 ### OAuth 2
 
+* Dropbox
 * Facebook
 * Github
 * Google
