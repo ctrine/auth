@@ -25,7 +25,7 @@ export class Provider {
   providerName = null
 
   constructor(options) {
-    let {callbackUrl, providerName} = options
+    let { callbackUrl, providerName } = options
 
     this.callbackUrl = callbackUrl
     this.providerName = providerName

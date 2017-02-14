@@ -10,17 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+import AuthDenied from './AuthDenied'
 import autobind from 'autobind-decorator'
 import deepAssign from 'deep-assign'
 import defaultAssign from 'object-defaults'
-import express from 'express'
-
-import AuthDenied from './AuthDenied'
-import {
-  AVAILABLE_PROVIDERS,
-  DEFAULT_OPTIONS,
-  DEFAULT_SESSION_KEYS
-} from './constants'
+import { AVAILABLE_PROVIDERS, DEFAULT_OPTIONS, DEFAULT_SESSION_KEYS } from './constants'
+import { Router } from 'express'
 
 /**
  * Middleware used to authenticate.
@@ -29,7 +24,7 @@ class AuthMiddleware {
   /**
    * Router used to intercept the auth and callback routes.
    */
-  router = express.Router()
+  router = new Router
 
   /**
    * All settings.
@@ -41,10 +36,10 @@ class AuthMiddleware {
    */
   _providers = {}
 
-  constructor(options:Options) {
+  constructor(options) {
     deepAssign(this._options, options)
 
-    let {authRoute, callbackRoute, domain, providers} = this._options
+    let { authRoute, callbackRoute, domain, providers } = this._options
     let callbackUrl = `${domain}${callbackRoute}`
 
     if (!providers)
@@ -52,7 +47,7 @@ class AuthMiddleware {
 
     // Configure the providers with the client’s credentials and the callback
     // URL that can be used to process additional steps.
-    Object.entries(providers).forEach(([providerName, config]) => {
+    Object.entries(providers).forEach(([ providerName, config ]) => {
       this._providers[providerName] = new AVAILABLE_PROVIDERS[providerName]({
         callbackUrl,
         ...config
@@ -117,7 +112,7 @@ class AuthMiddleware {
     let provider = this._providers[providerName]
 
     provider.processCallback(request, response, next)
-      .then(({bearer, tokens}) => {
+      .then(({ bearer, tokens }) => {
         request.session.bearers[providerName] = bearer
         request.session.tokens[providerName] = tokens
         next()
@@ -162,7 +157,7 @@ class AuthMiddleware {
    */
   @autobind
   _skipCallback(request, response, next) {
-    if (request.path == this._options.callbackRoute)
+    if (request.path === this._options.callbackRoute)
       next('route')
     else
       next()

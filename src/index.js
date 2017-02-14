@@ -11,7 +11,7 @@
 // the License.
 
 import AuthMiddleware from './AuthMiddleware'
-import {Options} from './types'
+import { Options } from './types'
 
 export function createMiddleware(options:Options) {
   let middleware = new AuthMiddleware(options)

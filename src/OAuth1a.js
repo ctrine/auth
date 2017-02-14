@@ -12,11 +12,10 @@
 
 import Axios from 'axios'
 import Crypto from 'crypto'
-import QueryString from 'querystring'
-import Uuid from 'uuid'
-
 import OAuth1aBearer from './OAuth1aBearer'
 import Provider from './Provider'
+import QueryString from 'querystring'
+import Uuid from 'uuid'
 
 export type SignatureMethods = 'HMAC-SHA1'
 export type SignatureOptions = {
@@ -33,13 +32,13 @@ export function generateSignature(options:SignatureOptions) {
     consumerSecret,
     data,
     httpMethod,
-    signatureMethod='HMAC-SHA1',
-    tokenSecret='',
+    signatureMethod = 'HMAC-SHA1',
+    tokenSecret = '',
     url
   } = options
 
   data = Object.entries(data)
-    .map(([key, value]) => `${key}=${QueryString.escape(value)}`)
+    .map(([ key, value ]) => `${key}=${QueryString.escape(value)}`)
     .sort()
     .reduce((result, pair) => `${result}&${pair}`)
 
@@ -48,10 +47,9 @@ export function generateSignature(options:SignatureOptions) {
   const ESCAPED_URL = QueryString.escape(url)
   const BASE_STRING = `${httpMethod}&${ESCAPED_URL}&${ESCAPED_PARAMETERS}`
 
-  // TODO: Add more methods.
   switch (signatureMethod) {
-    case 'HMAC-SHA1':
-      return Crypto.createHmac('sha1', `${consumerSecret}&${tokenSecret}`)
+  case 'HMAC-SHA1':
+    return Crypto.createHmac('sha1', `${consumerSecret}&${tokenSecret}`)
         .update(BASE_STRING)
         .digest('base64')
   }
@@ -109,10 +107,10 @@ export class OAuth1a extends Provider {
     })
 
     return Axios.create({
-        headers: {
-          Authorization: 'OAuth ' + QueryString.stringify(parameters, ',')
-        }
-      })
+      headers: {
+        Authorization: `OAuth ${QueryString.stringify(parameters, ',')}`
+      }
+    })
       .post(this.tokenRequestUrl)
       .then(axiosResponse => {
         let {
@@ -133,7 +131,7 @@ export class OAuth1a extends Provider {
       oauth_verifier
     } = request.query
 
-    if (oauth_token != this._step1Token)
+    if (oauth_token !== this._step1Token)
       throw new Error('Invalid token.')
 
     let parameters = {
@@ -155,10 +153,10 @@ export class OAuth1a extends Provider {
     })
 
     return Axios.create({
-        headers: {
-          Authorization: 'OAuth ' + QueryString.stringify(parameters, ',')
-        }
-      })
+      headers: {
+        Authorization: `OAuth ${QueryString.stringify(parameters, ',')}`
+      }
+    })
       .post(this.accessTokenRequestUrl, `oauth_verifier=${oauth_verifier}`)
       .then(axiosResponse => {
         let tokens = QueryString.parse(axiosResponse.data)
@@ -168,7 +166,10 @@ export class OAuth1a extends Provider {
           signatureMethod: this.signatureMethod,
           tokens
         })
-        return {bearer, tokens}
+        return {
+          bearer,
+          tokens
+        }
       })
   }
 }

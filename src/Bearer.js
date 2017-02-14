@@ -17,36 +17,36 @@ import QueryString from 'querystring'
 export class Bearer {
   _defaultHeaders = null
 
-  constructor(defaultHeaders={}) {
+  constructor(defaultHeaders = {}) {
     this._defaultHeaders = defaultHeaders
   }
 
-  delete({url, query, headers={}}) {
+  delete({ url, query, headers = {}}) {
     return this._getAxios(headers)
       .delete(this._getRequest(url, query))
   }
 
-  get({url, query, headers={}}) {
+  get({ url, query, headers = {}}) {
     return this._getAxios(headers)
       .get(this._getRequest(url, query))
   }
 
-  patch({url, query, data, headers={}}) {
+  patch({ url, query, data, headers = {}}) {
     return this._getAxios(headers)
       .patch(this._getRequest(url, query), data)
   }
 
-  post({url, query, data, headers={}}) {
+  post({ url, query, data, headers = {}}) {
     return this._getAxios(headers)
       .post(this._getRequest(url, query), data)
   }
 
-  put({url, query, data, headers={}}) {
+  put({ url, query, data, headers = {}}) {
     return this._getAxios(headers)
       .put(this._getRequest(url, query), data)
   }
 
-  _getAxios(headers={}) {
+  _getAxios(headers = {}) {
     return Axios.create({
       headers: defaultAssign(headers, this._defaultHeaders)
     })

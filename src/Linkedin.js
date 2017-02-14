@@ -11,7 +11,6 @@
 // the License.
 
 import defaultAssign from 'object-defaults'
-
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
@@ -30,24 +29,25 @@ export class Linkedin extends OAuth2 {
     let bearer = request.session.bearers[this.providerName]
 
     return bearer.get({
-        url: 'https://api.linkedin.com/v1/people/~:(id,email-address,picture-url,first-name,last-name)',
-        query: {
-          format: 'json'
-        }
-      })
+      query: {
+        format: 'json'
+      },
+      url: 'https://api.linkedin.com/v1/people/~:(id,email-address,picture-url,first-name,last-name)'
+    })
       .then(axiosResponse => {
         let {
           firstName,
           lastName,
-          emailAddress:email,
+          emailAddress: email,
           id,
-          pictureUrl:image
+          pictureUrl: image
         } = axiosResponse.data
 
         return {
-          id, image,
-          name: `${firstName} ${lastName}`,
-          emails: [email]
+          emails: [email],
+          id,
+          image,
+          name: `${firstName} ${lastName}`
         }
       })
   }

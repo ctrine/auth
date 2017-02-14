@@ -11,7 +11,6 @@
 // the License.
 
 import defaultAssign from 'object-defaults'
-
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
@@ -29,20 +28,20 @@ export class Google extends OAuth2 {
   loadUserData(request, response, next) {
     let bearer = request.session.bearers[this.providerName]
 
-    return bearer.get({
-        url: 'https://www.googleapis.com/plus/v1/people/me'
-      })
+    return bearer.get({ url: 'https://www.googleapis.com/plus/v1/people/me' })
       .then(axiosResponse => {
         let {
-          displayName:name,
+          displayName: name,
           emails,
           id,
-          image: {url:image}
+          image: { url: image }
         } = axiosResponse.data
 
         return {
-          id, image, name,
-          emails: emails.map(email => email.value)
+          emails: emails.map(email => email.value),
+          id,
+          image,
+          name
         }
       })
   }

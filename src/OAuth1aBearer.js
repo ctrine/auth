@@ -10,17 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-import Axios from 'axios'
-import Crypto from 'crypto'
-import defaultAssign from 'object-defaults'
-import QueryString from 'querystring'
-import Uuid from 'uuid'
-
 import Bearer from './Bearer'
-import {generateSignature} from './OAuth1a'
+import Uuid from 'uuid'
+import { generateSignature } from './OAuth1a'
 
 export class OAuth1aBearer extends Bearer {
-  constructor({consumerKey, consumerSecret, signatureMethod, tokens}, defaultHeaders={}) {
+  constructor({ consumerKey, consumerSecret, signatureMethod, tokens }, defaultHeaders = {}) {
     super(defaultHeaders)
     this.accessToken = tokens.oauth_token
     this.consumerKey = consumerKey
@@ -29,12 +24,73 @@ export class OAuth1aBearer extends Bearer {
     this.tokenSecret = tokens.oauth_token_secret
   }
 
-  // TODO
-  delete({url, query, headers={}}) {
-    throw new Error('Not implemented.')
+  delete({ url, query, headers = {}}) {
+    return super.delete({
+      headers,
+      query: this._getParameters({
+        method: 'DELETE',
+        query,
+        url
+      }),
+      url
+    })
   }
 
-  get({url, query, headers={}}) {
+  get({ url, query, headers = {}}) {
+    return super.get({
+      headers,
+      query: this._getParameters({
+        method: 'GET',
+        query,
+        url
+      }),
+      url
+    })
+  }
+
+  patch({ url, query, data, headers = {}}) {
+    return super.patch({
+      data,
+      headers,
+      query: this._getParameters({
+        data,
+        method: 'PATCH',
+        query,
+        url
+      }),
+      url
+    })
+  }
+
+  post({ url, query, data, headers = {}}) {
+    return super.post({
+      data,
+      headers,
+      query: this._getParameters({
+        data,
+        method: 'POST',
+        query,
+        url
+      }),
+      url
+    })
+  }
+
+  put({ url, query, data, headers = {}}) {
+    return super.get({
+      data,
+      headers,
+      query: this._getParameters({
+        data,
+        method: 'PUT',
+        query,
+        url
+      }),
+      url
+    })
+  }
+
+  _getParameters({ method, url, query, data }) {
     let parameters = {
       oauth_consumer_key: this.consumerKey,
       oauth_nonce: Uuid.v4(),
@@ -42,36 +98,19 @@ export class OAuth1aBearer extends Bearer {
       oauth_timestamp: Math.floor(Date.now() / 1000),
       oauth_token: this.accessToken,
       oauth_version: '1.0',
-      ...query
+      ...query,
+      ...data
     }
 
     parameters.oauth_signature = generateSignature({
       consumerSecret: this.consumerSecret,
       data: parameters,
-      httpMethod: 'GET',
+      httpMethod: method,
       tokenSecret: this.tokenSecret,
       url
     })
 
-    return super.get({
-      query: parameters,
-      url
-    })
-  }
-
-  // TODO
-  patch({url, query, data, headers={}}) {
-    throw new Error('Not implemented.')
-  }
-
-  // TODO
-  post({url, query, data, headers={}}) {
-    throw new Error('Not implemented.')
-  }
-
-  // TODO
-  put({url, query, data, headers={}}) {
-    throw new Error('Not implemented.')
+    return parameters
   }
 }
 

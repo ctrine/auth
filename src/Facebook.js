@@ -11,7 +11,6 @@
 // the License.
 
 import defaultAssign from 'object-defaults'
-
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
@@ -30,22 +29,27 @@ export class Facebook extends OAuth2 {
     let bearer = request.session.bearers[this.providerName]
 
     return bearer.get({
-        url: 'https://graph.facebook.com/v2.8/me',
-        query: {
-          fields: 'email, name, picture'
-        }
-      })
+      query: {
+        fields: 'email, name, picture'
+      },
+      url: 'https://graph.facebook.com/v2.8/me'
+    })
       .then(axiosResponse => {
         let {
           name,
           email,
           id,
           picture: {
-            data: {url:image}
+            data: { url: image }
           }
         } = axiosResponse.data
 
-        return {id, image, name, emails: [email]}
+        return {
+          emails: [email],
+          id,
+          image,
+          name
+        }
       })
   }
 }

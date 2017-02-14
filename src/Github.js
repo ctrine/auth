@@ -11,7 +11,6 @@
 // the License.
 
 import defaultAssign from 'object-defaults'
-
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
@@ -27,24 +26,27 @@ export class Github extends OAuth2 {
   }
 
   getAccessTokenRequestHeaders(request, response, next) {
-    return {Accept: `application/json`}
+    return { Accept: 'application/json' }
   }
 
   loadUserData(request, response, next) {
     let bearer = request.session.bearers[this.providerName]
 
-    return bearer.get({
-        url: 'https://api.github.com/user'
-      })
+    return bearer.get({ url: 'https://api.github.com/user' })
       .then(axiosResponse => {
         let {
           name,
           email,
           id,
-          avatar_url:image
+          avatar_url: image
         } = axiosResponse.data
 
-        return {id, image, name, emails: [email]}
+        return {
+          emails: [email],
+          id,
+          image,
+          name
+        }
       })
   }
 }

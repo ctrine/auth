@@ -11,7 +11,6 @@
 // the License.
 
 import defaultAssign from 'object-defaults'
-
 import OAuth1a from './OAuth1a'
 
 export const DEFAULT_OPTIONS = {
@@ -30,22 +29,24 @@ export class Twitter extends OAuth1a {
     let bearer = request.session.bearers[this.providerName]
 
     return bearer.get({
-        url: 'https://api.twitter.com/1.1/account/verify_credentials.json',
-        query: {
-          include_email: true
-        }
-      })
+      query: {
+        include_email: true
+      },
+      url: 'https://api.twitter.com/1.1/account/verify_credentials.json'
+    })
       .then(axiosResponse => {
         let {
           name,
           email,
-          id_str:id,
-          profile_image_url:image
+          id_str: id,
+          profile_image_url: image
         } = axiosResponse.data
 
         return {
-          id, image, name,
-          emails: [email]
+          emails: [email],
+          id,
+          image,
+          name
         }
       })
   }

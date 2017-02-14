@@ -1,6 +1,6 @@
 {
   "name": "ctrine-auth",
-  "version": "5.1.1",
+  "version": "5.2.0",
   "description": "Simple authentication for ExpressJS.",
   "license": "Apache-2.0",
   "main": "build",
@@ -11,8 +11,13 @@
     "build:target": "babel src --out-dir build --source-maps",
     "dev": "npm run clean && run-p dev:*",
     "dev:target": "babel src --out-dir build --watch --source-maps",
+    "fix-lint": "eslint --fix ./src",
+    "lint": "eslint ./src || exit 0",
     "start": "npm run dev",
     "test": "mocha tests/unit --compilers js:babel-register"
+  },
+  "eslintConfig": {
+    "extends": "ctrine-js-node"
   },
   "babel": {
     "plugins": [
@@ -65,6 +70,7 @@
     "express": "^4.14.0"
   },
   "devDependencies": {
-    "ctrine-webpack-settings-node": "^3.1.1"
+    "ctrine-dev-preset": "^1.10.0",
+    "eslint-config-ctrine-js-node": "^1.0.0"
   }
 }

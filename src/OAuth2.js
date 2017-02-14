@@ -10,13 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-import Axios from 'axios'
-import Promise from 'bluebird'
-import QueryString from 'querystring'
-
 import AuthDenied from './AuthDenied'
+import Axios from 'axios'
 import OAuth2Bearer from './OAuth2Bearer'
+import Promise from 'bluebird'
 import Provider from './Provider'
+import QueryString from 'querystring'
 
 /**
  * Abstract base class for OAuth2 authentication.
@@ -80,10 +79,10 @@ export class OAuth2 extends Provider {
   }
 
   processCallback(request, response, next) {
-    let {error, error_description} = request.query
+    let { error, error_description } = request.query
 
     if (error) {
-      if (error == 'access_denied')
+      if (error === 'access_denied')
         return Promise.reject(new AuthDenied(error_description))
       return Promise.reject(new Error(error_description))
     }
@@ -91,7 +90,7 @@ export class OAuth2 extends Provider {
     // Request the access token.
     let headers = this.getAccessTokenRequestHeaders()
     let axiosInstance = headers
-      ? Axios.create({headers})
+      ? Axios.create({ headers })
       : Axios
 
     let parameters = QueryString.stringify(
@@ -102,7 +101,10 @@ export class OAuth2 extends Provider {
       .then(axiosResponse => {
         let tokens = axiosResponse.data
         let bearer = new OAuth2Bearer(tokens)
-        return {bearer, tokens}
+        return {
+          bearer,
+          tokens
+        }
       })
   }
 }

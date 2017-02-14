@@ -33,13 +33,10 @@ export type OAuth2Options = {
   scope?:string|Array<string>
 }
 
-// TODO
-export type LocalOptions = {}
-
 /**
  * Available providers.
  */
-export type ProvidersOptions =  {
+export type ProvidersOptions = {
   facebook?: OAuth2Options,
   github?: OAuth2Options,
   google?: OAuth2Options,

@@ -11,7 +11,6 @@
 // the License.
 
 import defaultAssign from 'object-defaults'
-
 import OAuth2 from './OAuth2'
 
 export const DEFAULT_OPTIONS = {
@@ -28,20 +27,18 @@ export class Dropbox extends OAuth2 {
   loadUserData(request, response, next) {
     let bearer = request.session.bearers[this.providerName]
 
-    return bearer.get({
-        url: 'https://api.dropbox.com/1/account/info'
-      })
+    return bearer.get({ url: 'https://api.dropbox.com/1/account/info' })
       .then(axiosResponse => {
         let {
-          display_name:name,
+          display_name: name,
           email,
-          uid:id
+          uid: id
         } = axiosResponse.data
 
-        // TODO: Check if it is possible to retrieve the profile picture.
         return {
-          id, name,
-          emails: [email]
+          emails: [email],
+          id,
+          name
         }
       })
   }

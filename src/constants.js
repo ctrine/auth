@@ -15,7 +15,6 @@ import Facebook from './Facebook'
 import Github from './Github'
 import Google from './Google'
 import Linkedin from './Linkedin'
-import Local from './Local'
 import Twitter from './Twitter'
 import Yahoo from './Yahoo'
 
@@ -25,7 +24,6 @@ export const AVAILABLE_PROVIDERS = {
   github: Github,
   google: Google,
   linkedin: Linkedin,
-  local: Local,
   twitter: Twitter,
   yahoo: Yahoo
 }
@@ -46,20 +44,25 @@ function defaultOnAuthDenied(error, request, response, next, provider) {
 
 function defaultOnError(error, request, response, next, provider) {
   response.status(500).json({
-    provider,
-    error: error.stack || error
+    error: error.stack || error,
+    provider
   })
 }
 
 export const DEFAULT_OPTIONS = {
   authRoute: '/auth/:provider',
   callbackRoute: '/auth/callback',
-  onSuccess: defaultOnSuccess,
   onAuthDenied: defaultOnAuthDenied,
-  onError: defaultOnError
+  onError: defaultOnError,
+  onSuccess: defaultOnSuccess
 }
 
 export const DEFAULT_SESSION_KEYS = {
+  /**
+   * Used to make HTTP requests using the provider’s tokens.
+   */
+  bearers: {},
+
   /**
    * Current provider doing the authentication.
    */
@@ -70,11 +73,6 @@ export const DEFAULT_SESSION_KEYS = {
    * executed.
    */
   nextAuthStep: null,
-
-  /**
-   * Used to make HTTP requests using the provider’s tokens.
-   */
-  bearers: {},
 
   /**
    * Loaded profiles for each provider.
