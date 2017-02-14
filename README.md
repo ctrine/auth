@@ -67,8 +67,20 @@ app.get('/some-route', (request, response, next) => {
   if (!bearer)
     response.redirect('/auth/google')
 
-  // Make an API request using the access token.
-  bearer.post('url', data)
+  // Make an API request using the access token; bearer uses Axios to the make
+  // the requests, go to https://github.com/mzabriskie/axios for more information
+  // about the API.
+  bearer.post({
+    // API url.
+    url: '...',
+    // Query parameters.
+    query: {},
+    // Request body.
+    data: {},
+    // Additional headers; The basic headers e.g. Bearer required by OAuth2 is
+    // already set by the provider.
+    headers: {}
+  })
 })
 
 // Other routes...
