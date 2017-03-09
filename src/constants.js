@@ -28,33 +28,27 @@ export const AVAILABLE_PROVIDERS = {
   yahoo: Yahoo
 }
 
-function defaultOnSuccess(request, response, next, provider) {
-  response.json({
-    profile: request.session.profiles[provider],
-    provider
-  })
-}
-
-function defaultOnAuthDenied(error, request, response, next, provider) {
-  response.status(401).json({
-    error: error.stack || error,
-    provider
-  })
-}
-
-function defaultOnError(error, request, response, next, provider) {
-  response.status(500).json({
-    error: error.stack || error,
-    provider
-  })
-}
-
 export const DEFAULT_OPTIONS = {
   authRoute: '/auth/:provider',
   callbackRoute: '/auth/callback',
-  onAuthDenied: defaultOnAuthDenied,
-  onError: defaultOnError,
-  onSuccess: defaultOnSuccess
+  onAuthDenied(provider, err, req, res, next) {
+    res.status(401).json({
+      err: err.stack || err,
+      provider
+    })
+  },
+  onError(provider, err, req, res, next) {
+    res.status(500).json({
+      err: err.stack || err,
+      provider
+    })
+  },
+  onSuccess(provider, req, res, next) {
+    res.json({
+      profile: req.session.profiles[provider],
+      provider
+    })
+  }
 }
 
 export const DEFAULT_SESSION_KEYS = {

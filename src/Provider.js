@@ -26,7 +26,6 @@ export class Provider {
 
   constructor(options) {
     let { callbackUrl, providerName } = options
-
     this.callbackUrl = callbackUrl
     this.providerName = providerName
   }
@@ -34,7 +33,7 @@ export class Provider {
   /**
    * Authenticates or initiates authentication.
    */
-  authenticate(request:Object, response:Object, next:Function):void {
+  authenticate(req:Object, res:Object, next:Function):void {
     throw new Error('Not implemented.')
   }
 
@@ -42,7 +41,7 @@ export class Provider {
    * Loads the authenticated user ID, profile picture, full name and emails.
    * This data must be stored inside “profiles” key for each provider.
    */
-  loadUserData(request:Object, response:Object, next:Function):Promise {
+  loadUserData(req:Object, res:Object, next:Function):Promise {
     throw new Error('Not implemented.')
   }
 
@@ -51,7 +50,7 @@ export class Provider {
    * the authentication has finished and the system needs to load the user‘s
    * basic profile.
    */
-  processCallback(request:Object, response:Object, next:Function):Promise {
+  processCallback(req:Object, res:Object, next:Function):Promise {
     throw new Error('Not implemented.')
   }
 }

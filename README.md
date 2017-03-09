@@ -24,25 +24,25 @@ app.use(
   auth({
     // The domain used for callbacks.
     domain: 'http://www.mydomain.com',
-    // The “:provider” parameter is required to identify the provider; the following
-    // value is the default one and you can ommit the setting.
+    // The “:provider” parameter is required to identify the provider; the
+    // following value is the default one and you can ommit the setting.
     authRoute: '/auth/:provider',
     // Route to process the callback; the following value is the default one and
     // you can ommit the setting.
     callbackRoute: '/auth/callback',
     // Called when the authentication completes.
-    onSuccess: (request, response, next, provider) => {
-      let profile = request.session.profiles[provider]
-      response.send(profile)
+    onSuccess(provider, req, res, next) {
+      let profile = req.session.profiles[req.authProvider]
+      res.send(profile)
     },
     // Called when the user was not authenticated either by supplying invalid
     // credentials or actively refusing the app access to his profile data.
-    onAuthDenied: (error, request, response, next) => {
-      response.send('User was not authenticated...')
+    onAuthDenied(provider, err, req, res, next) {
+      res.send('User was not authenticated...')
     },
     // Called when the server returned an error.
-    onError: (error, request, response, next) => {
-      response.send('Something went wrong...')
+    onError(provider, err, req, res, next) {
+      res.send('Something went wrong...')
     },
     // You just need to add the client ID and secret.
     providers: {
@@ -60,12 +60,12 @@ app.use(
 )
 
 // API request.
-app.get('/some-route', (request, response, next) => {
-  let bearer = request.session.bearers['google']
+app.get('/some-route', (req, res, next) => {
+  let bearer = req.session.bearers['google']
 
   // User is not authenticated for google.
   if (!bearer)
-    response.redirect('/auth/google')
+    res.redirect('/auth/google')
 
   // Make an API request using the access token; bearer uses Axios to the make
   // the requests, go to https://github.com/mzabriskie/axios for more information
@@ -77,7 +77,7 @@ app.get('/some-route', (request, response, next) => {
     query: {},
     // Request body.
     data: {},
-    // Additional headers; The basic headers e.g. Bearer required by OAuth2 is
+    // Additional headers; The basic headers e.g. “Bearer” required by OAuth2 is
     // already set by the provider.
     headers: {}
   })

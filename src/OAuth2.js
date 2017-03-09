@@ -18,7 +18,7 @@ import Provider from './Provider'
 import QueryString from 'querystring'
 
 /**
- * Abstract base class for OAuth2 authentication.
+ * Abstract class for OAuth2 authentication.
  */
 export class OAuth2 extends Provider {
   accessTokenRequestUrl = null
@@ -49,7 +49,7 @@ export class OAuth2 extends Provider {
       this.scope = scope
   }
 
-  authenticate(request, response, next) {
+  authenticate(req, res, next) {
     if (!this.authRequestUrl)
       throw new Error('Auth URL not defined.')
 
@@ -60,31 +60,31 @@ export class OAuth2 extends Provider {
       scope: this.scope
     })
 
-    response.redirect(`${this.authRequestUrl}?${parameters}`)
+    res.redirect(`${this.authRequestUrl}?${parameters}`)
     return Promise.resolve()
   }
 
-  getAccessTokenRequestHeaders(request, response, next) {
+  getAccessTokenRequestHeaders(req, res, next) {
     // Most providers don’t require custom headers.
   }
 
-  getAccessTokenRequestParameters(request, response, next) {
+  getAccessTokenRequestParameters(req, res, next) {
     return {
       client_id: this.clientId,
       client_secret: this.clientSecret,
-      code: request.query.code,
+      code: req.query.code,
       grant_type: 'authorization_code',
       redirect_uri: this.callbackUrl
     }
   }
 
-  processCallback(request, response, next) {
-    let { error, error_description } = request.query
+  processCallback(req, res, next) {
+    let { err, err_description } = req.query
 
-    if (error) {
-      if (error === 'access_denied')
-        return Promise.reject(new AuthDenied(error_description))
-      return Promise.reject(new Error(error_description))
+    if (err) {
+      if (err === 'access_denied')
+        return Promise.reject(new AuthDenied(err_description))
+      return Promise.reject(new Error(err_description))
     }
 
     // Request the access token.
@@ -94,12 +94,12 @@ export class OAuth2 extends Provider {
       : Axios
 
     let parameters = QueryString.stringify(
-      this.getAccessTokenRequestParameters(request, response, next)
+      this.getAccessTokenRequestParameters(req, res, next)
     )
 
     return axiosInstance.post(this.accessTokenRequestUrl, parameters)
-      .then(axiosResponse => {
-        let tokens = axiosResponse.data
+      .then(axiosRes => {
+        let tokens = axiosRes.data
         let bearer = new OAuth2Bearer(tokens)
         return {
           bearer,

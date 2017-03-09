@@ -82,10 +82,10 @@ class AuthMiddleware {
   }
 
   @autobind
-  authenticate(request, response, next) {
-    defaultAssign(request.session, DEFAULT_SESSION_KEYS)
+  authenticate(req, res, next) {
+    defaultAssign(req.session, DEFAULT_SESSION_KEYS)
 
-    let providerName = request.params.provider
+    let providerName = req.params.provider
     let provider = this._providers[providerName]
 
     if (!provider)
@@ -93,38 +93,38 @@ class AuthMiddleware {
 
     // Save the provider in the session which can be used later to execute the
     // additional steps required.
-    request.session.currentAuthProvider = providerName
+    req.session.currentAuthProvider = providerName
 
     // Initiates authentication.
-    provider.authenticate(request, response, next)
-      .catch(error => {
-        request.session.currentAuthProvider = null
-        request.session.nextAuthStep = null
-        this._options.onError(error, request, response, next, providerName)
+    provider.authenticate(req, res, next)
+      .catch(err => {
+        req.session.currentAuthProvider = null
+        req.session.nextAuthStep = null
+        this._options.onError(providerName, err, req, res, next)
       })
   }
 
   @autobind
-  processCallback(request, response, next) {
-    defaultAssign(request.session, DEFAULT_SESSION_KEYS)
+  processCallback(req, res, next) {
+    defaultAssign(req.session, DEFAULT_SESSION_KEYS)
 
-    let providerName = request.session.currentAuthProvider
+    let providerName = req.session.currentAuthProvider
     let provider = this._providers[providerName]
 
-    provider.processCallback(request, response, next)
+    provider.processCallback(req, res, next)
       .then(({ bearer, tokens }) => {
-        request.session.bearers[providerName] = bearer
-        request.session.tokens[providerName] = tokens
+        req.session.bearers[providerName] = bearer
+        req.session.tokens[providerName] = tokens
         next()
       })
-      .catch(error => {
-        request.session.currentAuthProvider = null
-        request.session.nextAuthStep = null
+      .catch(err => {
+        req.session.currentAuthProvider = null
+        req.session.nextAuthStep = null
 
-        if (error instanceof AuthDenied)
-          this._options.onAuthDenied(error, request, response, next, providerName)
+        if (err instanceof AuthDenied)
+          this._options.onAuthDenied(providerName, err, req, res, next)
         else
-          this._options.onError(error, request, response, next, providerName)
+          this._options.onError(providerName, err, req, res, next)
       })
   }
 
@@ -132,23 +132,23 @@ class AuthMiddleware {
    * The authentication has finished, now it needs to load the basic user profile.
    */
   @autobind
-  _authenticated(request, response, next) {
-    defaultAssign(request.session, DEFAULT_SESSION_KEYS)
+  _authenticated(req, res, next) {
+    defaultAssign(req.session, DEFAULT_SESSION_KEYS)
 
-    let providerName = request.session.currentAuthProvider
+    let providerName = req.session.currentAuthProvider
     let provider = this._providers[providerName]
 
-    provider.loadUserData(request, response, next)
+    provider.loadUserData(req, res, next)
       .then(profile => {
-        request.session.currentAuthProvider = null
-        request.session.nextAuthStep = null
-        request.session.profiles[providerName] = profile
-        this._options.onSuccess(request, response, next, providerName)
+        req.session.currentAuthProvider = null
+        req.session.nextAuthStep = null
+        req.session.profiles[providerName] = profile
+        this._options.onSuccess(providerName, req, res, next)
       })
-      .catch(error => {
-        request.session.currentAuthProvider = null
-        request.session.nextAuthStep = null
-        this._options.onError(error, request, response, next, providerName)
+      .catch(err => {
+        req.session.currentAuthProvider = null
+        req.session.nextAuthStep = null
+        this._options.onError(providerName, err, req, res, next)
       })
   }
 
@@ -156,8 +156,8 @@ class AuthMiddleware {
    * Used to allow the callback as a subroute of the auth route.
    */
   @autobind
-  _skipCallback(request, response, next) {
-    if (request.path === this._options.callbackRoute)
+  _skipCallback(req, res, next) {
+    if (req.path === this._options.callbackRoute)
       next('route')
     else
       next()

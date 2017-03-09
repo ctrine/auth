@@ -16,9 +16,12 @@ export type Profile = {
   emails:Array<string>
 }
 
-export type SuccessCallback = (request:any, response:any, next:Function, provider:string) => void
-export type ErrorCallback = (error:any, request:any, response:any, next:Function, provider:string) => void
+export type SuccessCallback = (provider:string, req:any, res:any, next:Function) => void
+export type ErrorCallback = (provider:string, err:any, req:any, res:any, next:Function) => void
 
+/**
+ * Any provider using the OAuth 1a will require these options.
+ */
 export type OAuth1aOptions = {
   consumerKey:string,
   consumerSecret:string
@@ -41,7 +44,6 @@ export type ProvidersOptions = {
   github?: OAuth2Options,
   google?: OAuth2Options,
   linkedin?: OAuth2Options,
-  local?: LocalOptions,
   twitter?: OAuth1aOptions,
   yahoo?: OAuth2Options
 }

@@ -29,14 +29,15 @@ export class Yahoo extends OAuth2 {
     super(defaultAssign(options, DEFAULT_OPTIONS))
   }
 
-  getAccessTokenRequestHeaders(request, response, next) {
+  getAccessTokenRequestHeaders(req, res, next) {
     const BASE64_CREDENTIALS = Buffer.from(`${this.clientId}:${this.clientSecret}`)
       .toString('base64')
     return { Authorization: `Basic ${BASE64_CREDENTIALS}` }
   }
 
-  getTokenRequestParameters(request, response, next) {
-    let { code } = request.query
+  // The client ID and secret are sent in the headers.
+  getAccessTokenRequestParameters(req, res, next) {
+    let { code } = req.query
     return {
       code,
       grant_type: 'authorization_code',
@@ -44,14 +45,13 @@ export class Yahoo extends OAuth2 {
     }
   }
 
-  loadUserData(request, response, next) {
-    let bearer = request.session.bearers[this.providerName]
-    let { xoauth_yahoo_guid } = request.session.tokens[this.providerName]
-
+  loadUserData(req, res, next) {
+    let bearer = req.session.bearers[this.providerName]
+    let { xoauth_yahoo_guid } = req.session.tokens[this.providerName]
     return bearer.get({
       url: `https://social.yahooapis.com/v1/user/${xoauth_yahoo_guid}/profile`
     })
-      .then(axiosResponse => {
+      .then(axiosRes => {
         let {
           profile: {
             emails,
@@ -60,8 +60,7 @@ export class Yahoo extends OAuth2 {
             guid: id,
             image: { imageUrl: image }
           }
-        } = axiosResponse.data
-
+        } = axiosRes.data
         return {
           emails: emails.map(email => email.handle),
           id,

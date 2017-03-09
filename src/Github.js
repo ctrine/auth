@@ -25,22 +25,20 @@ export class Github extends OAuth2 {
     super(defaultAssign(options, DEFAULT_OPTIONS))
   }
 
-  getAccessTokenRequestHeaders(request, response, next) {
+  getAccessTokenRequestHeaders(req, res, next) {
     return { Accept: 'application/json' }
   }
 
-  loadUserData(request, response, next) {
-    let bearer = request.session.bearers[this.providerName]
-
+  loadUserData(req, res, next) {
+    let bearer = req.session.bearers[this.providerName]
     return bearer.get({ url: 'https://api.github.com/user' })
-      .then(axiosResponse => {
+      .then(axiosRes => {
         let {
           name,
           email,
           id,
           avatar_url: image
-        } = axiosResponse.data
-
+        } = axiosRes.data
         return {
           emails: [email],
           id,

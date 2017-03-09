@@ -58,7 +58,7 @@ export function generateSignature(options:SignatureOptions) {
 }
 
 /**
- * Abstract base class for OAuth 1a authentication.
+ * Abstract class for OAuth 1a authentication.
  */
 export class OAuth1a extends Provider {
   accessTokenRequestUrl = null
@@ -89,7 +89,7 @@ export class OAuth1a extends Provider {
     this.tokenRequestUrl = tokenRequestUrl
   }
 
-  authenticate(request, response, next) {
+  authenticate(req, res, next) {
     let parameters = {
       oauth_callback: this.callbackUrl,
       oauth_consumer_key: this.consumerKey,
@@ -112,24 +112,24 @@ export class OAuth1a extends Provider {
       }
     })
       .post(this.tokenRequestUrl)
-      .then(axiosResponse => {
+      .then(axiosRes => {
         let {
           oauth_token,
           oauth_token_secret
-        } = QueryString.parse(axiosResponse.data)
+        } = QueryString.parse(axiosRes.data)
 
         this._step1Token = oauth_token
         this._step1TokenSecret = oauth_token_secret
 
-        response.redirect(`${this.authRequestUrl}?oauth_token=${oauth_token}`)
+        res.redirect(`${this.authRequestUrl}?oauth_token=${oauth_token}`)
       })
   }
 
-  processCallback(request, response, next) {
+  processCallback(req, res, next) {
     let {
       oauth_token,
       oauth_verifier
-    } = request.query
+    } = req.query
 
     if (oauth_token !== this._step1Token)
       throw new Error('Invalid token.')
@@ -158,8 +158,8 @@ export class OAuth1a extends Provider {
       }
     })
       .post(this.accessTokenRequestUrl, `oauth_verifier=${oauth_verifier}`)
-      .then(axiosResponse => {
-        let tokens = QueryString.parse(axiosResponse.data)
+      .then(axiosRes => {
+        let tokens = QueryString.parse(axiosRes.data)
         let bearer = new OAuth1aBearer({
           consumerKey: this.consumerKey,
           consumerSecret: this.consumerSecret,

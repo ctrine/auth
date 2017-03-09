@@ -15,8 +15,8 @@ import { Options } from './types'
 
 export function createMiddleware(options:Options) {
   let middleware = new AuthMiddleware(options)
-  return (request, response, next) =>
-    middleware.router(request, response, next)
+  return (req, res, next) =>
+    middleware.router(req, res, next)
 }
 
 export default createMiddleware

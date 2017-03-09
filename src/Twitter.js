@@ -25,23 +25,19 @@ export class Twitter extends OAuth1a {
     super(defaultAssign(options, DEFAULT_OPTIONS))
   }
 
-  loadUserData(request, response, next) {
-    let bearer = request.session.bearers[this.providerName]
-
+  loadUserData(req, res, next) {
+    let bearer = req.session.bearers[this.providerName]
     return bearer.get({
-      query: {
-        include_email: true
-      },
+      query: { include_email: true },
       url: 'https://api.twitter.com/1.1/account/verify_credentials.json'
     })
-      .then(axiosResponse => {
+      .then(axiosRes => {
         let {
           name,
           email,
           id_str: id,
           profile_image_url: image
-        } = axiosResponse.data
-
+        } = axiosRes.data
         return {
           emails: [email],
           id,
