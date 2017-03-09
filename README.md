@@ -32,7 +32,7 @@ app.use(
     callbackRoute: '/auth/callback',
     // Called when the authentication completes.
     onSuccess(provider, req, res, next) {
-      let profile = req.session.profiles[req.authProvider]
+      let profile = req.session.profiles[provider]
       res.send(profile)
     },
     // Called when the user was not authenticated either by supplying invalid
