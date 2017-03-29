@@ -77,14 +77,13 @@ app.get('/some-route', (req, res, next) => {
     query: {},
     // Request body.
     data: {},
-    // Additional headers; The basic headers e.g. “Bearer” required by OAuth2 is
-    // already set by the provider.
+    // Additional headers; The basic headers required by the provider are already
+    // set.
     headers: {}
   })
 })
 
 // Other routes...
-
 ```
 
 ## Supported providers
