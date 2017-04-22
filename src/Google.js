@@ -29,18 +29,9 @@ export class Google extends OAuth2 {
     let bearer = req.session.bearers[this.providerName]
     return bearer.get({ url: 'https://www.googleapis.com/plus/v1/people/me' })
       .then(axiosRes => {
-        let {
-          displayName: name,
-          emails,
-          id,
-          image: { url: image }
-        } = axiosRes.data
-        return {
-          emails: emails.map(email => email.value),
-          id,
-          image,
-          name
-        }
+        let { displayName: name, emails, id, image: { url: image }} = axiosRes.data
+        emails = emails.map(email => email.value)
+        return { emails, id, image, name }
       })
   }
 }

@@ -31,11 +31,7 @@ export class OAuth2 extends Provider {
     super(options)
 
     let {
-      accessTokenRequestUrl,
-      authRequestUrl,
-      clientId,
-      clientSecret,
-      scope
+      accessTokenRequestUrl, authRequestUrl, clientId, clientSecret, scope
     } = options
 
     this.accessTokenRequestUrl = accessTokenRequestUrl
@@ -101,10 +97,7 @@ export class OAuth2 extends Provider {
       .then(axiosRes => {
         let tokens = axiosRes.data
         let bearer = new OAuth2Bearer(tokens)
-        return {
-          bearer,
-          tokens
-        }
+        return { bearer, tokens }
       })
   }
 }

@@ -33,18 +33,11 @@ export class Linkedin extends OAuth2 {
     })
       .then(axiosRes => {
         let {
-          firstName,
-          lastName,
-          emailAddress: email,
-          id,
-          pictureUrl: image
+          emailAddress: email, firstName, id, lastName, pictureUrl: image
         } = axiosRes.data
-        return {
-          emails: [email],
-          id,
-          image,
-          name: `${firstName} ${lastName}`
-        }
+        let emails = [email]
+        let name = `${firstName} ${lastName}`
+        return { emails, id, image, name }
       })
   }
 }

@@ -31,22 +31,22 @@ export const AVAILABLE_PROVIDERS = {
 export const DEFAULT_OPTIONS = {
   authRoute: '/auth/:provider',
   callbackRoute: '/auth/callback',
-  onAuthDenied(provider, err, req, res, next) {
+  onAuthDenied(prov, err, req, res, next) {
     res.status(401).json({
       err: err.stack || err,
-      provider
+      prov
     })
   },
-  onError(provider, err, req, res, next) {
+  onError(prov, err, req, res, next) {
     res.status(500).json({
       err: err.stack || err,
-      provider
+      prov
     })
   },
-  onSuccess(provider, req, res, next) {
+  onSuccess(prov, req, res, next) {
     res.json({
-      profile: req.session.profiles[provider],
-      provider
+      profile: req.session.profiles[prov],
+      prov
     })
   }
 }

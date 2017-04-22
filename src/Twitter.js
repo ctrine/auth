@@ -32,18 +32,9 @@ export class Twitter extends OAuth1a {
       url: 'https://api.twitter.com/1.1/account/verify_credentials.json'
     })
       .then(axiosRes => {
-        let {
-          name,
-          email,
-          id_str: id,
-          profile_image_url: image
-        } = axiosRes.data
-        return {
-          emails: [email],
-          id,
-          image,
-          name
-        }
+        let { name, email, id_str: id, profile_image_url: image } = axiosRes.data
+        let emails = [email]
+        return { emails, id, image, name }
       })
   }
 }

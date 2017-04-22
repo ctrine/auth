@@ -29,12 +29,8 @@ export type SignatureOptions = {
 
 export function generateSignature(options:SignatureOptions) {
   let {
-    consumerSecret,
-    data,
-    httpMethod,
-    signatureMethod = 'HMAC-SHA1',
-    tokenSecret = '',
-    url
+    consumerSecret, data, httpMethod, signatureMethod = 'HMAC-SHA1',
+    tokenSecret = '', url
   } = options
 
   data = Object.entries(data)
@@ -50,15 +46,15 @@ export function generateSignature(options:SignatureOptions) {
   switch (signatureMethod) {
   case 'HMAC-SHA1':
     return Crypto.createHmac('sha1', `${consumerSecret}&${tokenSecret}`)
-        .update(BASE_STRING)
-        .digest('base64')
+      .update(BASE_STRING)
+      .digest('base64')
   }
 
   throw new Error('Unsupported signature method.')
 }
 
 /**
- * Abstract class for OAuth 1a authentication.
+ * Abstract class for OAuth-1a authentication.
  */
 export class OAuth1a extends Provider {
   accessTokenRequestUrl = null
@@ -73,12 +69,8 @@ export class OAuth1a extends Provider {
     super(options)
 
     let {
-      accessTokenRequestUrl,
-      authRequestUrl,
-      consumerKey,
-      consumerSecret,
-      signatureMethod = 'HMAC-SHA1',
-      tokenRequestUrl
+      accessTokenRequestUrl, authRequestUrl, consumerKey, consumerSecret,
+      signatureMethod = 'HMAC-SHA1', tokenRequestUrl
     } = options
 
     this.accessTokenRequestUrl = accessTokenRequestUrl
@@ -113,10 +105,7 @@ export class OAuth1a extends Provider {
     })
       .post(this.tokenRequestUrl)
       .then(axiosRes => {
-        let {
-          oauth_token,
-          oauth_token_secret
-        } = QueryString.parse(axiosRes.data)
+        let { oauth_token, oauth_token_secret } = QueryString.parse(axiosRes.data)
 
         this._step1Token = oauth_token
         this._step1TokenSecret = oauth_token_secret
@@ -126,10 +115,7 @@ export class OAuth1a extends Provider {
   }
 
   processCallback(req, res, next) {
-    let {
-      oauth_token,
-      oauth_verifier
-    } = req.query
+    let { oauth_token, oauth_verifier } = req.query
 
     if (oauth_token !== this._step1Token)
       throw new Error('Invalid token.')
@@ -166,10 +152,7 @@ export class OAuth1a extends Provider {
           signatureMethod: this.signatureMethod,
           tokens
         })
-        return {
-          bearer,
-          tokens
-        }
+        return { bearer, tokens }
       })
   }
 }

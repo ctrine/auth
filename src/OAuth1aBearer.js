@@ -28,9 +28,7 @@ export class OAuth1aBearer extends Bearer {
     return super.delete({
       headers,
       query: this._getParameters({
-        method: 'DELETE',
-        query,
-        url
+        method: 'DELETE', query, url
       }),
       url
     })
@@ -40,9 +38,7 @@ export class OAuth1aBearer extends Bearer {
     return super.get({
       headers,
       query: this._getParameters({
-        method: 'GET',
-        query,
-        url
+        method: 'GET', query, url
       }),
       url
     })
@@ -53,10 +49,7 @@ export class OAuth1aBearer extends Bearer {
       data,
       headers,
       query: this._getParameters({
-        data,
-        method: 'PATCH',
-        query,
-        url
+        data, method: 'PATCH', query, url
       }),
       url
     })
@@ -67,10 +60,7 @@ export class OAuth1aBearer extends Bearer {
       data,
       headers,
       query: this._getParameters({
-        data,
-        method: 'POST',
-        query,
-        url
+        data, method: 'POST', query, url
       }),
       url
     })
@@ -81,10 +71,7 @@ export class OAuth1aBearer extends Bearer {
       data,
       headers,
       query: this._getParameters({
-        data,
-        method: 'PUT',
-        query,
-        url
+        data, method: 'PUT', query, url
       }),
       url
     })

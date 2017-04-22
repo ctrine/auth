@@ -20,7 +20,7 @@ export type SuccessCallback = (provider:string, req:any, res:any, next:Function)
 export type ErrorCallback = (provider:string, err:any, req:any, res:any, next:Function) => void
 
 /**
- * Any provider using the OAuth 1a will require these options.
+ * Any provider using the OAuth-1a will require these options.
  */
 export type OAuth1aOptions = {
   consumerKey:string,
@@ -40,12 +40,12 @@ export type OAuth2Options = {
  * Available providers.
  */
 export type ProvidersOptions = {
-  facebook?: OAuth2Options,
-  github?: OAuth2Options,
-  google?: OAuth2Options,
-  linkedin?: OAuth2Options,
-  twitter?: OAuth1aOptions,
-  yahoo?: OAuth2Options
+  facebook?:OAuth2Options,
+  github?:OAuth2Options,
+  google?:OAuth2Options,
+  linkedin?:OAuth2Options,
+  twitter?:OAuth1aOptions,
+  yahoo?:OAuth2Options
 }
 
 /**

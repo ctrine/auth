@@ -34,20 +34,9 @@ export class Facebook extends OAuth2 {
       url: 'https://graph.facebook.com/v2.8/me'
     })
       .then(axiosRes => {
-        let {
-          name,
-          email,
-          id,
-          picture: {
-            data: { url: image }
-          }
-        } = axiosRes.data
-        return {
-          emails: [email],
-          id,
-          image,
-          name
-        }
+        let { email, id, name, picture: { data: { url: image }}} = axiosRes.data
+        let emails = [email]
+        return { emails, id, image, name }
       })
   }
 }

@@ -22,7 +22,7 @@ import { Router } from 'express'
  */
 class AuthMiddleware {
   /**
-   * Router used to intercept the auth and callback routes.
+   * Router used to intercept the authentication and callback routes.
    */
   router = new Router
 
@@ -56,8 +56,8 @@ class AuthMiddleware {
 
     // Loop used to process additional steps required to authenticate the user.
     // This function may be called multiple times, the state/step must be stored
-    // in the session. Usually the callback route is a subroute of the auth route
-    // so, it is important that this route gets checked first.
+    // in the session. Usually the callback route is a subroute of the authentication
+    // route so, it is important that this route gets checked first.
     this.router.get(
       callbackRoute,
       this.processCallback,
@@ -153,7 +153,7 @@ class AuthMiddleware {
   }
 
   /**
-   * Used to allow the callback as a subroute of the auth route.
+   * Used to allow the callback as a subroute of the authentication route.
    */
   @autobind
   _skipCallback(req, res, next) {

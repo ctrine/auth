@@ -28,16 +28,9 @@ export class Dropbox extends OAuth2 {
     let bearer = req.session.bearers[this.providerName]
     return bearer.get({ url: 'https://api.dropbox.com/1/account/info' })
       .then(axiosRes => {
-        let {
-          display_name: name,
-          email,
-          uid: id
-        } = axiosRes.data
-        return {
-          emails: [email],
-          id,
-          name
-        }
+        let { display_name: name, email, uid: id } = axiosRes.data
+        let emails = [email]
+        return { emails, id, name }
       })
   }
 }

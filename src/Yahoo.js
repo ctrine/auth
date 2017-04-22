@@ -38,11 +38,7 @@ export class Yahoo extends OAuth2 {
   // The client ID and secret are sent in the headers.
   getAccessTokenRequestParameters(req, res, next) {
     let { code } = req.query
-    return {
-      code,
-      grant_type: 'authorization_code',
-      redirect_uri: this.callbackUrl
-    }
+    return { code, grant_type: 'authorization_code', redirect_uri: this.callbackUrl }
   }
 
   loadUserData(req, res, next) {
@@ -54,19 +50,12 @@ export class Yahoo extends OAuth2 {
       .then(axiosRes => {
         let {
           profile: {
-            emails,
-            familyName,
-            givenName,
-            guid: id,
-            image: { imageUrl: image }
+            emails, familyName, givenName, guid: id, image: { imageUrl: image }
           }
         } = axiosRes.data
-        return {
-          emails: emails.map(email => email.handle),
-          id,
-          image,
-          name: `${givenName} ${familyName}`
-        }
+        let name = `${givenName} ${familyName}`
+        emails = emails.map(email => email.handle)
+        return { emails, id, image, name }
       })
   }
 }
