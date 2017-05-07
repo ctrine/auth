@@ -16,28 +16,6 @@
     "start": "npm run dev",
     "test": "mocha tests/unit --compilers js:babel-register"
   },
-  "eslintConfig": {
-    "extends": "ctrine-js-node"
-  },
-  "babel": {
-    "plugins": [
-      "transform-flow-strip-types",
-      "transform-decorators-legacy",
-      "transform-class-properties",
-      "transform-export-extensions",
-      "transform-object-rest-spread"
-    ],
-    "presets": [
-      [
-        "latest",
-        {
-          "es2015": {
-            "modules": "commonjs"
-          }
-        }
-      ]
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ctrine/auth.git"
