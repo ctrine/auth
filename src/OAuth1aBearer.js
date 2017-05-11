@@ -25,56 +25,28 @@ export class OAuth1aBearer extends Bearer {
   }
 
   delete({ url, query, headers = {}}) {
-    return super.delete({
-      headers,
-      query: this._getParameters({
-        method: 'DELETE', query, url
-      }),
-      url
-    })
+    query = this._getParameters({ method: 'DELETE', query, url })
+    return super.delete({ headers, query, url })
   }
 
   get({ url, query, headers = {}}) {
-    return super.get({
-      headers,
-      query: this._getParameters({
-        method: 'GET', query, url
-      }),
-      url
-    })
+    query = this._getParameters({ method: 'GET', query, url })
+    return super.get({ headers, query, url })
   }
 
   patch({ url, query, data, headers = {}}) {
-    return super.patch({
-      data,
-      headers,
-      query: this._getParameters({
-        data, method: 'PATCH', query, url
-      }),
-      url
-    })
+    query = this._getParameters({ data, method: 'PATCH', query, url })
+    return super.patch({ data, headers, query, url })
   }
 
   post({ url, query, data, headers = {}}) {
-    return super.post({
-      data,
-      headers,
-      query: this._getParameters({
-        data, method: 'POST', query, url
-      }),
-      url
-    })
+    query = this._getParameters({ data, method: 'PUT', query, url })
+    return super.post({ data, headers, query, url })
   }
 
   put({ url, query, data, headers = {}}) {
-    return super.get({
-      data,
-      headers,
-      query: this._getParameters({
-        data, method: 'PUT', query, url
-      }),
-      url
-    })
+    query = this._getParameters({ data, method: 'PUT', query, url })
+    return super.get({ data, headers, query, url })
   }
 
   _getParameters({ method, url, query, data }) {

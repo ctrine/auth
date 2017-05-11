@@ -106,10 +106,8 @@ export class OAuth1a extends Provider {
       .post(this.tokenRequestUrl)
       .then(axiosRes => {
         let { oauth_token, oauth_token_secret } = QueryString.parse(axiosRes.data)
-
         this._step1Token = oauth_token
         this._step1TokenSecret = oauth_token_secret
-
         res.redirect(`${this.authRequestUrl}?oauth_token=${oauth_token}`)
       })
   }
