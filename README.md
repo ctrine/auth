@@ -25,10 +25,10 @@ app.use(
     // The domain used for callbacks.
     domain: 'http://www.mydomain.com',
     // The “:provider” parameter is required to identify the provider; the
-    // following value is the default one and you can ommit the setting.
+    // following value is the default one and you can omit the setting.
     authRoute: '/auth/:provider',
     // Route to process the callback; the following value is the default one and
-    // you can ommit the setting.
+    // you can omit the setting.
     callbackRoute: '/auth/callback',
     // Called when the authentication completes.
     onSuccess(provider, req, res, next) {
@@ -67,7 +67,7 @@ app.get('/some-route', (req, res, next) => {
   if (!bearer)
     res.redirect('/auth/google')
 
-  // Make an API request using the access token; bearer uses Axios to the make
+  // Make an API request using the access token; bearer uses axios to the make
   // the requests, go to https://github.com/mzabriskie/axios for more information
   // about the API.
   bearer.post({

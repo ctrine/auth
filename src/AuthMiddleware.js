@@ -49,15 +49,14 @@ class AuthMiddleware {
     // URL that can be used to process additional steps.
     Object.entries(providers).forEach(([ providerName, config ]) => {
       this._providers[providerName] = new AVAILABLE_PROVIDERS[providerName]({
-        callbackUrl,
-        ...config
+        callbackUrl, ...config
       })
     })
 
     // Loop used to process additional steps required to authenticate the user.
     // This function may be called multiple times, the state/step must be stored
-    // in the session. Usually the callback route is a subroute of the authentication
-    // route so, it is important that this route gets checked first.
+    // in the session. Usually the callback route is a subroute of the
+    // authentication route so, it is important that this route gets checked first.
     this.router.get(
       callbackRoute,
       this.processCallback,

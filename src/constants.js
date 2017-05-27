@@ -28,17 +28,20 @@ export const AVAILABLE_PROVIDERS = {
   yahoo: Yahoo
 }
 
+const HTTP_UNAUTHORIZED = 401
+const HTTP_INTERNAL_SERVER_ERROR = 500
+
 export const DEFAULT_OPTIONS = {
   authRoute: '/auth/:provider',
   callbackRoute: '/auth/callback',
   onAuthDenied(prov, err, req, res, next) {
-    res.status(401).json({
+    res.status(HTTP_UNAUTHORIZED).json({
       err: err.stack || err,
       prov
     })
   },
   onError(prov, err, req, res, next) {
-    res.status(500).json({
+    res.status(HTTP_INTERNAL_SERVER_ERROR).json({
       err: err.stack || err,
       prov
     })

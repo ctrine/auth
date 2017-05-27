@@ -48,11 +48,9 @@ export class Yahoo extends OAuth2 {
       url: `https://social.yahooapis.com/v1/user/${xoauth_yahoo_guid}/profile`
     })
       .then(axiosRes => {
-        let {
-          profile: {
-            emails, familyName, givenName, guid: id, image: { imageUrl: image }
-          }
-        } = axiosRes.data
+        let { profile: {
+          emails, familyName, givenName, guid: id, image: { imageUrl: image }
+        }} = axiosRes.data
         let name = `${givenName} ${familyName}`
         emails = emails.map(email => email.handle)
         return { emails, id, image, name }
